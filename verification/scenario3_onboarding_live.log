@@ -1,0 +1,174 @@
+[    0.0s] isolated demo home: runtime/demo/onboarding-20261007T094341Z
+[    0.1s] $ ulpf spec compile
+        {
+          "id": "paloalto.panos.traffic",
+          "priority": 200,
+          "sha256": "0a4d0eec8e5d285e1086980954e8030bb8da1b00bfe1c2b0a401787b025e0f67",
+          "version": "1.1.0"
+        },
+        {
+          "id": "netgate.pfsense.filterlog",
+          "priority": 200,
+          "sha256": "9157f2857253f5a94c53078d12dced868a1b4a811e550682dc7c12d60f9acf91",
+          "version": "1.0.0"
+        },
+        {
+          "id": "squid.squid.access",
+          "priority": 200,
+          "sha256": "a6852b6fafa67fb6b379ef5138c5b9efa86e2cb2ecad30fbeaba239db402089c",
+          "version": "1.0.0"
+        },
+        {
+          "id": "oisf.suricata.alert",
+          "priority": 200,
+          "sha256": "8c7ea0cdd467b3fd5600198da3087a866e683912d055c4d20c31211be2227169",
+          "version": "1.0.0"
+        },
+        {
+          "id": "oisf.suricata.flow",
+          "priority": 200,
+          "sha256": "a4771ff0b1dc25902fb67cd7f690ebd334dc5a7359ca2ec5d18860b31f5181e9",
+          "version": "1.0.0"
+        },
+        {
+          "id": "zeek.zeek.conn",
+          "priority": 200,
+          "sha256": "7cae21b82575993e6cc441f5b6879941cd57f2fe644e287b80937fe10b85f210",
+          "version": "1.0.0"
+        }
+      ],
+      "vector": "vector 0.58.0 (x86_64-unknown-linux-musl 2bcad9b 2026-08-26 13:37:07.557544670)",
+      "written": true
+    }
+[   16.9s] $ ulpf os bootstrap
+    {
+      "template": "installed",
+      "write_index": [
+        "ulpf-demo-v1"
+      ]
+    }
+[   17.3s] $ ulpf stack up vector
+    vector: healthy (pid 67311)
+[   37.5s] $ ulpf gen --vendor blackbox --count 200 --transport tcp --seed 21 --sendlog <repo>/runtime/demo/onboarding-20261007T094341Z/sendlog-unknown.ndjson
+    sent 200 event(s) via tcp to 127.0.0.1:15514
+[   39.6s] $ ulpf account --sendlog <repo>/runtime/demo/onboarding-20261007T094341Z/sendlog-unknown.ndjson
+    archived                     200
+    normalized                   200
+    status                       {'fallback': 200}
+    archive_uid_duplicates       0
+    archived_not_normalized      0
+    normalized_not_archived      0
+    recorded_losses              {}
+    sent                         200
+    sent_not_archived            0
+    vector_received_by_source    {}
+    indexed                      200
+    archived_not_indexed         0
+    indexed_not_archived         0
+    verdict                      PASS
+[   40.0s] $ ulpf fingerprint
+    FINGERPRINT       EVENTS  FORMAT          LAST SEEN             EXAMPLE
+    47743ce9856a6c24     200  text            2026-10-07T09:44:19Z  BBX1|2026-10-07T09:44:19.096Z|gw-07|FLOW|DROP|src:10.3.144.123;sport:5
+    1 cluster(s), 200 fallback event(s)
+[   40.0s] $ ulpf onboard 47743ce9856a6c24 --id acme.blackbox.flow --vendor Blackbox (fictional) --product Blackbox Gateway --samples synthetic
+    draft written: specs/_drafts/acme.blackbox.flow.yaml
+    samples: 200 archived event(s) -> runtime/data/onboarding/acme.blackbox.flow/samples.ndjson
+    structure: kv -- '|' occurs 5x in >=90% of lines (6 segments); last segment is a ';'-separated list of key:value pairs
+      ACTIVE                  src -> src_endpoint.ip                  ip      0.90 deterministic
+      ACTIVE                sport -> src_endpoint.port                port    0.90 deterministic
+      ACTIVE                  dst -> dst_endpoint.ip                  ip      0.90 deterministic
+      ACTIVE                dport -> dst_endpoint.port                port    0.90 deterministic
+      ACTIVE                proto -> connection_info.protocol_name    string  0.75 deterministic
+      ACTIVE                   tx -> traffic.bytes_out                long    0.85 deterministic
+      ACTIVE                   rx -> traffic.bytes_in                 long    0.85 deterministic
+      ACTIVE                 rule -> firewall_rule.uid                string  0.75 deterministic
+      time                     h1 -> time (rfc3339)
+      enum                     h4 -> action/disposition (+activity) -- 'h4': 2 distinct values, 100% of samples are allow/deny words ['DROP', 'PERMIT']; detected by values (no name evidence)
+    review required:
+      - confirm proto -> connection_info.protocol_name: name 'proto' matches the connection_info.protocol_name synonym list
+      - confirm rule -> firewall_rule.uid: name 'rule' matches the firewall_rule.uid synonym list
+      - POLICY: allow -> activity Traffic(6), deny -> activity Refuse(5); confirm against vendor semantics
+      - direction: confirm that the src/dst fields are the connection initiator/responder (then set is_src_dst_assignment_known: true)
+      - 3 field(s) stay in `unmapped`: h0, h2, h3
+    next: ulpf gate specs/_drafts/acme.blackbox.flow.yaml
+[   40.5s] $ ulpf gate <repo>/runtime/demo/onboarding-20261007T094341Z/specs/_drafts/acme.blackbox.flow.yaml
+    [PASS] lint         no lint errors
+    [PASS] compile      compiled; vector validate OK; no VRL warnings
+    [PASS] draft_tests  5/5 draft vector(s) passed
+    [PASS] regression   31/31 approved vector(s) unchanged
+    [PASS] samples      200/200 claimed (100.0%, need >= 95%); partial 0.0% (max 5%); schema-invalid 0; round-trip failures 0
+    GATE: PASS  (content fdd78b808e5b, report runtime/data/onboarding/acme.blackbox.flow/gate.json)
+[   89.1s] SCRIPTED REVIEW EDIT: map header field h2 (gateway name) to device.hostname (+host profile)
+[   89.1s] $ ulpf promote <repo>/runtime/demo/onboarding-20261007T094341Z/specs/_drafts/acme.blackbox.flow.yaml --approver Scripted Demo Reviewer
+    Error: the draft changed after it was gated (content hash differs); re-run `ulpf gate`
+[   89.2s] $ ulpf gate <repo>/runtime/demo/onboarding-20261007T094341Z/specs/_drafts/acme.blackbox.flow.yaml
+    [PASS] lint         no lint errors
+    [PASS] compile      compiled; vector validate OK; no VRL warnings
+    [PASS] draft_tests  5/5 draft vector(s) passed
+    [PASS] regression   31/31 approved vector(s) unchanged
+    [PASS] samples      200/200 claimed (100.0%, need >= 95%); partial 0.0% (max 5%); schema-invalid 0; round-trip failures 0
+    GATE: PASS  (content 74ff1d12c85b, report runtime/data/onboarding/acme.blackbox.flow/gate.json)
+[  138.6s] $ ulpf promote <repo>/runtime/demo/onboarding-20261007T094341Z/specs/_drafts/acme.blackbox.flow.yaml --approver Scripted Demo Reviewer --note scripted demo (scripts/demo_onboarding.py) - not a human review
+    {
+      "audit": {
+        "approved_at": "2026-10-07T09:46:00+00:00",
+        "approved_by": "Scripted Demo Reviewer",
+        "config_sha256": "64e7ddf464db1fffdeeb0b82b4fff8bf5bc31c3ffa5196f22065509edd0ac788",
+        "content_sha256": "74ff1d12c85bdbff98d4dabd73ebb2022a1cd3a7aeab72133ebff60790486c16",
+        "event": "promote",
+        "gate_report_sha256": "60c2c139c4c81b48bfe876b44d6b9cdf7e53126e290f98f17d2f93666069badb",
+        "path": "specs/acme/blackbox_flow.yaml",
+        "spec_id": "acme.blackbox.flow",
+        "spec_sha256": "6eeaa2b30c79b00d7e02a2e2993637881a92263ae244335cafbdf3310db4678e",
+        "version": "0.1.0"
+      },
+      "baseline": "runtime/data/state/drift/acme.blackbox.flow.baseline.json",
+      "draft_archived_as": "<repo>/runtime/demo/onboarding-20261007T094341Z/runtime/data/onboarding/acme.blackbox.flow/draft-74ff1d12c85b.yaml",
+      "golden": "tests/golden/acme.blackbox.flow",
+      "live_config": "64e7ddf464db1fffdeeb0b82b4fff8bf5bc31c3ffa5196f22065509edd0ac788",
+      "promoted": "specs/acme/blackbox_flow.yaml",
+      "specs_in_live_config": 14
+    }
+[  222.3s] Vector reloaded the new configuration 14.0s after promote
+[  222.3s] $ ulpf gen --vendor blackbox --count 200 --transport tcp --seed 22 --sendlog <repo>/runtime/demo/onboarding-20261007T094341Z/sendlog-after.ndjson
+    sent 200 event(s) via tcp to 127.0.0.1:15514
+[  227.4s] $ ulpf account --sendlog <repo>/runtime/demo/onboarding-20261007T094341Z/sendlog-all.ndjson
+    archived                     400
+    normalized                   400
+    status                       {'fallback': 200, 'parsed': 200}
+    archive_uid_duplicates       0
+    archived_not_normalized      0
+    normalized_not_archived      0
+    recorded_losses              {}
+    sent                         400
+    sent_not_archived            0
+    vector_received_by_source    {'in_syslog_tcp': 400.0}
+    indexed                      400
+    archived_not_indexed         0
+    indexed_not_archived         0
+    verdict                      PASS
+[  227.6s] OpenSearch ulpf-demo: parsed by acme.blackbox.flow = 200, fallback = 200, denied Blackbox flows = 58
+[  227.6s] $ ulpf drift check --all-time
+    400 event(s); compared: acme.blackbox.flow
+    [WARN] -                              UNKNOWN_SOURCE       200 fallback event(s) with fingerprint 47743ce9856a6c24: run `ulpf onboard 47743ce9856a6c24`
+    DRIFT: UNKNOWN_SOURCES
+[  227.8s] $ ulpf scorecard
+    400 event(s) {'fallback': 200, 'parsed': 200}; unknown: 200 in 1 cluster(s)
+    SPEC                             VER     TESTS   GOLDEN  PARSED   MAPPED  DRIFT        OVERALL
+    acme.blackbox.flow               0.1.0   never run 5/5     100.0%   84.6%   no signals   PASS
+    cisco.asa.connection             1.0.0   never run 3/3     no events no events no baseline  PASS
+    fortinet.fortigate.traffic       1.1.0   never run 6/6     no events no events no baseline  PASS
+    ulpf.generic.cef                 1.0.0   never run 1/1     no events no events no baseline  PASS
+    ulpf.generic.json                1.0.0   never run 1/1     no events no events no baseline  PASS
+    ulpf.generic.kv                  1.0.0   never run 1/1     no events no events no baseline  WARN
+    ulpf.generic.leef                1.0.0   never run 1/1     no events no events no baseline  PASS
+    ulpf.generic.syslog              1.0.0   never run 1/1     no events no events no baseline  PASS
+    paloalto.panos.traffic           1.1.0   never run 5/5     no events no events no baseline  PASS
+    netgate.pfsense.filterlog        1.0.0   never run 4/4     no events no events no baseline  PASS
+    squid.squid.access               1.0.0   never run 3/3     no events no events no baseline  PASS
+    oisf.suricata.alert              1.0.0   never run 1/1     no events no events no baseline  PASS
+    oisf.suricata.flow               1.0.0   never run 2/2     no events no events no baseline  PASS
+    zeek.zeek.conn                   1.0.0   never run 2/2     no events no events no baseline  PASS
+[  227.9s] $ ulpf stack down vector
+    vector: stopped
+[  228.5s] SCENARIO 3 LIVE: PASS (expected 200 parsed after promotion, 200 fallback before)

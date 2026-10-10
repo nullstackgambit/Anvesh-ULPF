@@ -1,0 +1,154 @@
+{
+  "activity_id": 5,
+  "activity_name": "Refuse",
+  "app_name": "dns",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "community_uid": "1:oN9TZxsqjTcnQwV+06gSzuia/zE=",
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "udp",
+    "protocol_num": 17,
+    "uid": "C00000002f96af9a3d"
+  },
+  "dst_endpoint": {
+    "ip": "198.51.100.53",
+    "port": 53
+  },
+  "is_src_dst_assignment_known": true,
+  "metadata": {
+    "log_format": "json",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "6e167c1b-f85e-5bc0-be66-d57a7509f736",
+        "log_format": "json",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "1791370800",
+    "product": {
+      "name": "Zeek",
+      "vendor_name": "Zeek Project"
+    },
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "zeek.zeek.conn",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "7cae21b82575993e6cc441f5b6879941cd57f2fe644e287b80937fe10b85f210"
+      }
+    ],
+    "uid": "6e167c1b-f85e-5bc0-be66-d57a7509f736",
+    "version": "1.9.0"
+  },
+  "raw_data": "{\"ts\":1791370800.0,\"uid\":\"C00000002f96af9a3d\",\"id.orig_h\":\"10.2.3.4\",\"id.orig_p\":40000,\"id.resp_h\":\"198.51.100.53\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":12.5,\"orig_bytes\":40,\"resp_bytes\":0,\"conn_state\":\"REJ\",\"missed_bytes\":0,\"history\":\"Sr\",\"orig_pkts\":1,\"orig_ip_bytes\":80,\"resp_pkts\":0,\"resp_ip_bytes\":0,\"ip_proto\":17}",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "625a5c2bf516ac9c1c3f0f01ee572ac17decdae33e63b47a73d8449f9aabb17b"
+  },
+  "raw_data_size": 337,
+  "severity": "Unknown",
+  "severity_id": 0,
+  "src_endpoint": {
+    "ip": "10.2.3.4",
+    "port": 40000
+  },
+  "time": 1791370800000,
+  "traffic": {
+    "bytes_in": 0,
+    "bytes_missed": 0,
+    "bytes_out": 80,
+    "packets_in": 0,
+    "packets_out": 1
+  },
+  "type_name": "Network Activity: Refuse",
+  "type_uid": 400105,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 19,
+      "mapped": 15,
+      "unmapped": 4
+    },
+    "event_uid": "6e167c1b-f85e-5bc0-be66-d57a7509f736",
+    "fingerprint": "f83689be5c6b4af5",
+    "format": "json",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "activity_id": "enum:conn_state",
+      "app_name": "service",
+      "connection_info.community_uid": "derived:community_id",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "proto",
+      "connection_info.protocol_num": "ip_proto",
+      "connection_info.uid": "uid",
+      "dst_endpoint.ip": "id.resp_h",
+      "dst_endpoint.port": "id.resp_p",
+      "is_src_dst_assignment_known": "const",
+      "severity_id": "default:unknown",
+      "src_endpoint.ip": "id.orig_h",
+      "src_endpoint.port": "id.orig_p",
+      "time": "ts",
+      "traffic.bytes_in": "resp_ip_bytes",
+      "traffic.bytes_missed": "missed_bytes",
+      "traffic.bytes_out": "orig_ip_bytes",
+      "traffic.packets_in": "resp_pkts",
+      "traffic.packets_out": "orig_pkts"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "zeek.zeek.conn",
+      "spec_sha256": "7cae21b82575993e6cc441f5b6879941cd57f2fe644e287b80937fe10b85f210",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 337,
+      "sha256": "625a5c2bf516ac9c1c3f0f01ee572ac17decdae33e63b47a73d8449f9aabb17b",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "ts",
+      "format": "epoch_auto",
+      "skew_ms": 3600000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "duration": 12.5,
+    "history": "Sr",
+    "orig_bytes": 40,
+    "resp_bytes": 0
+  }
+}

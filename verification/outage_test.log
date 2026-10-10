@@ -1,0 +1,59 @@
+[   0.0s] $ ulpf stack down opensearch
+    opensearch: stopped
+[   4.5s] $ ulpf gen --vendor fortigate --vendor panos --count 2000 --transport tcp --eps 200 --seed 81 --sendlog <repo>/runtime/data/sendlog-outage-1791370809.ndjson
+    sent 2000 event(s) via tcp to 127.0.0.1:5514
+[  15.0s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791370809.ndjson --no-opensearch --json
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 27035,
+      "archived_not_normalized": 0,
+      "normalized": 27035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 17,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 5.0,
+      "status": {
+        "fallback": 356,
+        "parsed": 26679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 12000.0
+      },
+      "verdict": "PASS"
+    }
+[  23.5s] while OpenSearch is DOWN: sent=2000 sent_not_archived=0 archived_not_normalized=0 verdict(no index)=PASS
+[  23.5s] $ ulpf stack up opensearch
+    opensearch: healthy (pid 75967)
+    opensearch bootstrap: {'template': 'updated', 'write_index': ['ulpf-events-v2']}
+[ 137.6s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791370809.ndjson --json --settle 5
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 27035,
+      "archived_not_indexed": 0,
+      "archived_not_normalized": 0,
+      "indexed": 27035,
+      "indexed_not_archived": 0,
+      "normalized": 27035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 23,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 4.0,
+      "status": {
+        "fallback": 356,
+        "parsed": 26679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 12000.0
+      },
+      "verdict": "PASS"
+    }
+[ 165.5s] after restart: indexed=27035 archived_not_indexed=0 verdict=PASS
+[ 165.5s] OUTAGE TEST: PASS

@@ -1,0 +1,7 @@
+{
+  "url": "https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv",
+  "retrieved": "2026-10-07",
+  "sha256": "e704ee14e69347681b3a6271af02195a9741236074fc311449ebb032101bdf2c",
+  "license": "IANA registry data (public; see https://www.iana.org/help/licensing-terms)",
+  "used_for": "connection_info.protocol_name derivation (lowercase keyword, OCSF convention)"
+}

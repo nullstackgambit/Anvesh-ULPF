@@ -1,0 +1,116 @@
+{
+  "activity_id": 0,
+  "activity_name": "Unknown",
+  "category_name": "Uncategorized",
+  "category_uid": 0,
+  "class_name": "Base Event",
+  "class_uid": 0,
+  "metadata": {
+    "event_code": "200",
+    "log_format": "leef",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "4bd2cd4b-f6cf-5f1e-b167-138b382caea3",
+        "log_format": "leef",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "product": {
+      "name": "Gateway",
+      "vendor_name": "ExampleCorp",
+      "version": "1.0"
+    },
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "ulpf.generic.leef",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "061ba4fc5a85f0ac9a04bf53a21169fe2d229a2cf20a8730a93451db843e8bb8"
+      }
+    ],
+    "uid": "4bd2cd4b-f6cf-5f1e-b167-138b382caea3",
+    "version": "1.9.0"
+  },
+  "raw_data": "LEEF:2.0|ExampleCorp|Gateway|1.0|200|^|src=10.0.0.1^dst=10.0.0.2^usrName=bob",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "57f72e23cc3ebffbe14b0bf44e46367e5ba11be056dcadc9d1579eb3d9248ab0"
+  },
+  "raw_data_size": 76,
+  "severity": "Unknown",
+  "severity_id": 0,
+  "time": 1791374400000,
+  "type_name": "Base Event: Unknown",
+  "type_uid": 0,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 8,
+      "mapped": 4,
+      "unmapped": 4
+    },
+    "event_uid": "4bd2cd4b-f6cf-5f1e-b167-138b382caea3",
+    "fingerprint": "5a8354160e1c36f9",
+    "format": "leef",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "activity_id": "default:unknown",
+      "metadata.event_code": "leef.event_id",
+      "metadata.product.name": "leef.product",
+      "metadata.product.vendor_name": "leef.vendor",
+      "metadata.product.version": "leef.product_version",
+      "severity_id": "default:unknown",
+      "time": "ingest"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "ulpf.generic.leef",
+      "spec_sha256": "061ba4fc5a85f0ac9a04bf53a21169fe2d229a2cf20a8730a93451db843e8bb8",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 76,
+      "sha256": "57f72e23cc3ebffbe14b0bf44e46367e5ba11be056dcadc9d1579eb3d9248ab0",
+      "utf8": true
+    },
+    "reasons": [
+      "generic_parser"
+    ],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "fallback",
+    "time": {
+      "note": "no usable source time; time = receipt time",
+      "source": "ingest"
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "dst": "10.0.0.2",
+    "leef.version": "2.0",
+    "src": "10.0.0.1",
+    "usrName": "bob"
+  }
+}

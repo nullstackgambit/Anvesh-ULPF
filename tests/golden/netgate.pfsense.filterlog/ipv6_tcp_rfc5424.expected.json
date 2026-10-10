@@ -1,0 +1,179 @@
+{
+  "action": "Denied",
+  "action_id": 2,
+  "activity_id": 5,
+  "activity_name": "Refuse",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "tcp",
+    "protocol_num": 6
+  },
+  "device": {
+    "hostname": "fw.example.net",
+    "interface_name": "em1",
+    "type": "Firewall",
+    "type_id": 9
+  },
+  "disposition": "Blocked",
+  "disposition_id": 2,
+  "dst_endpoint": {
+    "ip": "2001:db8::1",
+    "port": 22
+  },
+  "firewall_rule": {
+    "uid": "1000000104"
+  },
+  "metadata": {
+    "log_format": "syslog+csv",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "218330ca-b188-52c2-953d-5afa90098f54",
+        "log_format": "syslog+csv",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "2026-10-07T10:15:32.000+00:00",
+    "product": {
+      "name": "pfSense",
+      "vendor_name": "Netgate"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "netgate.pfsense.filterlog",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "9157f2857253f5a94c53078d12dced868a1b4a811e550682dc7c12d60f9acf91"
+      }
+    ],
+    "uid": "218330ca-b188-52c2-953d-5afa90098f54",
+    "version": "1.9.0"
+  },
+  "raw_data": "<134>1 2026-10-07T10:15:32.000+00:00 fw.example.net filterlog 5432 - - 5,,,1000000104,em1,match,block,in,6,0x00,0x00000,64,tcp,6,80,2001:db8::5,2001:db8::1,51515,22,0,S,123,,64800,,mss",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "d85e0c0fa3c39c76b71b82d5053ba337357201d4f30803f3e059cb1a14946dad"
+  },
+  "raw_data_size": 184,
+  "severity": "Informational",
+  "severity_id": 1,
+  "src_endpoint": {
+    "ip": "2001:db8::5",
+    "port": 51515
+  },
+  "time": 1791368132000,
+  "traffic": {
+    "bytes": 80
+  },
+  "type_name": "Network Activity: Refuse",
+  "type_uid": 400105,
+  "ulpf": {
+    "coverage": {
+      "empty": 4,
+      "empty_fields": [
+        "ack_number",
+        "anchor",
+        "sub_rule_number",
+        "urg"
+      ],
+      "fields": 33,
+      "mapped": 13,
+      "unmapped": 16
+    },
+    "event_uid": "218330ca-b188-52c2-953d-5afa90098f54",
+    "fingerprint": "c98d220255ec47d9",
+    "format": "syslog+csv",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:action",
+      "activity_id": "enum:action",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "protocol_text",
+      "connection_info.protocol_num": "protocol_id",
+      "device.hostname": "syslog.hostname",
+      "device.interface_name": "real_interface",
+      "device.type_id": "const",
+      "disposition_id": "enum:action",
+      "dst_endpoint.ip": "destination_ip",
+      "dst_endpoint.port": "destination_port",
+      "firewall_rule.uid": "tracker",
+      "severity_id": "enum:syslog.severity",
+      "src_endpoint.ip": "source_ip",
+      "src_endpoint.port": "source_port",
+      "time": "syslog.timestamp_raw",
+      "traffic.bytes": "length"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "netgate.pfsense.filterlog",
+      "spec_sha256": "9157f2857253f5a94c53078d12dced868a1b4a811e550682dc7c12d60f9acf91",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 184,
+      "sha256": "d85e0c0fa3c39c76b71b82d5053ba337357201d4f30803f3e059cb1a14946dad",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "syslog.timestamp_raw",
+      "format": "rfc3339",
+      "skew_ms": 6268000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "class": "0x00",
+    "data_length": "0",
+    "direction": "in",
+    "flow_label": "0x00000",
+    "hop_limit": "64",
+    "ip_version": "6",
+    "reason": "match",
+    "rule_number": "5",
+    "sequence_number": "123",
+    "syslog.appname": "filterlog",
+    "syslog.facility": "local0",
+    "syslog.procid": 5432,
+    "syslog.version": 1,
+    "tcp_flags": "S",
+    "tcp_options": "mss",
+    "tcp_window": "64800"
+  }
+}

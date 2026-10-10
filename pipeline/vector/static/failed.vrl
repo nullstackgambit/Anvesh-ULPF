@@ -1,0 +1,8 @@
+# ULPF failed (static): receives the ORIGINAL input event of a parser
+# transform that aborted or hit a runtime error (Vector `reroute_dropped`,
+# P0 finding V14). Vector attaches no reason, so the parser is identified from
+# the event's own routing decision. Generated parsers handle every expected
+# error themselves; reaching this path indicates a defect worth investigating.
+.ulpf.status = "failed"
+.ulpf.reasons = ["parser_runtime_error"]
+.ulpf.errors = [{"code": "parser_runtime_error", "parser": .ulpf.parser_id}]

@@ -1,0 +1,15 @@
+title: IDS alert observed in network traffic
+id: c1703cd9-9f14-400c-99f7-cd9a65d10f30
+status: experimental
+description: A network event flagged as an alert by the sensor (OCSF is_alert), e.g. Suricata eve alert.
+author: ULPF
+date: 2026-10-07
+logsource:
+  category: firewall
+detection:
+  selection:
+    is_alert: true
+  condition: selection
+falsepositives:
+  - IDS signature false positives
+level: high

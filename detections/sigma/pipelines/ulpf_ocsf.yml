@@ -1,0 +1,26 @@
+# pySigma processing pipeline: Sigma rules -> ULPF's normalized OCSF 1.9.0 index.
+# Field names on the left are the names ULPF's rules use (firewall-style);
+# names that are not listed (e.g. action, action_id, is_alert, ulpf.status)
+# are already OCSF/ULPF paths and pass through unchanged.
+name: ULPF OCSF 1.9.0
+priority: 20
+transformations:
+  - id: logsource_firewall_is_network_activity
+    type: add_condition
+    conditions:
+      class_uid: 4001
+    rule_conditions:
+      - type: logsource
+        category: firewall
+  - id: ulpf_ocsf_field_names
+    type: field_name_mapping
+    mapping:
+      src_ip: src_endpoint.ip
+      src_port: src_endpoint.port
+      dst_ip: dst_endpoint.ip
+      dst_port: dst_endpoint.port
+      protocol: connection_info.protocol_name
+      device_name: device.hostname
+      product: metadata.product.name
+      bytes_out: traffic.bytes_out
+      bytes_in: traffic.bytes_in

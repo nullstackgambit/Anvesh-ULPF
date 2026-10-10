@@ -1,0 +1,77 @@
+# Squid native access.log -> OCSF HTTP Activity (4002)
+# Columns: Squid wiki "Features/LogFormat" (native format) and
+# "SquidFaq/SquidLogs" (result codes are compositional tags, e.g. TCP_DENIED_REPLY).
+id: squid.squid.access
+version: 1.0.0
+status: approved
+vendor: Squid Project
+product: Squid
+description: Squid native access.log lines (file inbox or syslog-forwarded).
+references:
+  - https://wiki.squid-cache.org/Features/LogFormat
+  - https://wiki.squid-cache.org/SquidFaq/SquidLogs
+samples: synthetic
+priority: 200
+ocsf:
+  class: http_activity
+  profiles: [host, security_control]   # actor requires the host profile in http_activity
+match:
+  all:
+    - {field: body, regex: '^[0-9]{9,10}\.[0-9]{3} +-?[0-9]+ [^ ]+ [A-Z_]+/[0-9]{3} [0-9]+ [A-Za-z]+ '}
+parse:
+  kind: regex
+  input: body
+  regex:
+    pattern: '^(?P<time>[0-9]+\.[0-9]{3}) +(?P<elapsed>-?[0-9]+) (?P<client>[^ ]+) (?P<squid_code>[^/ ]+)/(?P<http_status>[0-9]{3}) (?P<bytes>[0-9]+) (?P<method>[^ ]+) (?P<url>[^ ]+) (?P<user>[^ ]+) (?P<hierarchy>[^/ ]+)/(?P<peer>[^ ]+) (?P<content_type>[^ ]+)(?: (?P<extra>.*))?$'
+unmapped:
+  empty_markers: ["-"]
+time:
+  - {field: time, format: epoch_auto}     # "Unix timestamp as UTC seconds with a millisecond resolution"
+fields:
+  client:       {to: src_endpoint.ip, type: ip}
+  http_status:  {to: http_response.code, type: int}
+  bytes:        {to: http_response.length, type: int}   # "amount of data delivered to the client" incl. headers
+  method:       {to: http_request.http_method, type: string, transform: upper}
+  url:          {to: http_request.url.url_string, type: string}
+  user:         {to: actor.user.name, type: string}
+  peer:         {to: dst_endpoint.ip, type: ip}           # origin server IP for direct requests
+  content_type: {to: http_response.content_type, type: string}
+  elapsed: {unmapped: true, note: "transaction duration in ms; not the same as http_response.latency"}
+enums:
+  - source: method
+    map: {connect: {activity_id: 1}, delete: {activity_id: 2}, get: {activity_id: 3}, head: {activity_id: 4}, options: {activity_id: 5}, post: {activity_id: 6}, put: {activity_id: 7}, trace: {activity_id: 8}, patch: {activity_id: 9}}
+    default: {activity_id: 99}
+  # result codes are composed of tags; DENIED = "denied by access controls"
+  - source: squid_code
+    match: contains
+    map: {denied: {action_id: 2, disposition_id: 2}}
+    otherwise: {action_id: 1, disposition_id: 1}
+pii:
+  - {field: user, action: hmac_sha256}
+tests:
+  - name: get_miss
+    raw: "1791368130.250    120 10.1.1.20 TCP_MISS/200 9800 GET http://www.example.org/p/424242 - HIER_DIRECT/203.0.113.20 text/html"
+    expect:
+      ulpf.status: parsed
+      activity_id: 3
+      http_request.http_method: GET
+      http_response.code: 200
+      http_response.length: 9800
+      src_endpoint.ip: 10.1.1.20
+      dst_endpoint.ip: 203.0.113.20
+      action_id: 1
+      time: 1791368130250
+  - name: connect_tunnel
+    raw: "1791368130.250    120 10.1.1.20 TCP_TUNNEL/200 9800 CONNECT www.example.com:443 - HIER_DIRECT/203.0.113.20 -"
+    expect:
+      ulpf.status: parsed
+      activity_id: 1
+      http_request.http_method: CONNECT
+      http_request.url.url_string: "www.example.com:443"
+  - name: denied
+    raw: "1791370800.000    120 10.2.3.4 TCP_DENIED/403 0 GET http://blocked.example.net/ - HIER_NONE/- text/html"
+    expect:
+      ulpf.status: parsed
+      action_id: 2
+      action: Denied
+      http_response.code: 403

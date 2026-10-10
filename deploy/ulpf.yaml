@@ -1,0 +1,60 @@
+# ULPF deployment configuration. Contains NO secrets: passwords, signing keys
+# and TLS private keys are generated at install time into runtime/secrets and
+# deploy/keys (both git-ignored).
+collector_id: ulpf-collector-01
+
+# Vector's global timezone. It is only used where a log carries no zone at all
+# (e.g. RFC 3164 syslog headers); every such assumption is recorded per event
+# in ulpf.time.assumed_timezone. Specs can override it per source.
+timezone: UTC
+
+listen:
+  # Bound to loopback by default. Expose deliberately, together with
+  # permit_origin and TLS (see docs/architecture.md, Security).
+  syslog_udp: 127.0.0.1:5514
+  syslog_tcp: 127.0.0.1:5514          # newline-delimited frames
+  # RFC 6587 octet counting is OFF by default: Vector 0.58's framer drops a
+  # frame with invalid UTF-8 and every later frame on that connection
+  # (finding V20). Enable only for senders that guarantee UTF-8.
+  syslog_tcp_octet: null              # e.g. 127.0.0.1:5515
+  syslog_tls: 127.0.0.1:6514          # enabled only when deploy/certs has a server cert
+  http_ndjson: 127.0.0.1:8088         # POST newline-delimited events
+  inbox_glob: runtime/data/inbox/*.log
+  permit_origin: ["127.0.0.0/8"]
+
+limits:
+  # Hard framing limit. Vector discards larger frames and logs each discard;
+  # ULPF copies Vector's internal warnings into the DLQ (vector-internal-*).
+  # Under bursts that copy is a LOWER BOUND: measured 128 of 500 discards
+  # captured (finding V15). Keep this far above any legitimate event size.
+  max_frame_bytes: 1048576
+  # Soft limit. Larger events are archived byte-for-byte but not parsed
+  # (status=failed, reason=oversized).
+  max_parse_bytes: 65536
+
+archive:
+  bucket: minute        # minute | hour : granularity of raw archive files
+
+opensearch:
+  url: http://127.0.0.1:9200
+  index_prefix: ulpf-events      # backing indices ulpf-events-v<N>
+  read_alias: ulpf-events
+  write_alias: ulpf-events-write
+  # Buffer in front of the OpenSearch sink. While OpenSearch is down, events
+  # queue here; when it is full they are DROPPED for the index only (never for
+  # the raw archive, which is a separate sink) and Vector logs the drop.
+  # `ulpf account` then shows archived_not_indexed and `ulpf replay missing`
+  # re-indexes them. `block` would instead back-pressure every sink, the
+  # archive included.
+  #   memory (default): max_events in RAM; lost on a Vector restart (the archive
+  #                     still has them -> ulpf replay missing). No disk use.
+  #   disk:             survives restarts; Vector allocates >= 268435488 bytes.
+  buffer:
+    type: memory
+    max_events: 50000
+    max_bytes: 268435488      # used when type: disk
+    when_full: drop_newest
+
+vector:
+  api_address: 127.0.0.1:8686
+  metrics_address: 127.0.0.1:9598

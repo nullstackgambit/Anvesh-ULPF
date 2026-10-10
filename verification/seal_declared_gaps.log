@@ -1,0 +1,63 @@
+# 2026-10-07T14:09:01Z raw-archive sealing after the P6-4 investigation (SYNTHETIC TEST DATA)
+$ ulpf seal
+{
+  "files": 12,
+  "gaps": {},
+  "held_gaps": {
+    "2026-10-07/raw-20261007T1052-ulpf-collector-01.ndjson": 1108,
+    "2026-10-07/raw-20261007T1053-ulpf-collector-01.ndjson": 203
+  },
+  "manifest_sha256": "0105aaa0fb368e7522ced0b44d2d107d647d8d39f3729c694baf88cb702f9904",
+  "merkle_root": "b31c562963398563a94a164e1e39b6aa95c9d91f2611cb5da3f662b38ae62cf9",
+  "problems": [],
+  "records": 17912,
+  "sealed": true,
+  "seq": 4,
+  "skipped_open": []
+}
+NOT SEALED (gaps): 1311 empty line(s) in 2 file(s). Investigate with `ulpf account` (and `ulpf repair`), then `ulpf seal --accept-gaps`.
+rc=1
+
+$ ulpf account   # every event of the gap period is archived (recovered file), normalized and indexed
+archived                     29036
+normalized                   29036
+archive_uid_duplicates       0
+archived_not_normalized      0
+normalized_not_archived      0
+indexed                      29036
+archived_not_indexed         0
+indexed_not_archived         0
+verdict                      PASS
+
+$ ulpf seal --accept-gaps
+{
+  "files": 2,
+  "gaps": {
+    "2026-10-07/raw-20261007T1052-ulpf-collector-01.ndjson": 1108,
+    "2026-10-07/raw-20261007T1053-ulpf-collector-01.ndjson": 203
+  },
+  "held_gaps": {},
+  "manifest_sha256": "18271485d77738a3515fd736590ad2eb8d3b6a78cc9e38caaf993e2b64fa3ff3",
+  "merkle_root": "4b8656037ec71ab534cf6f722d4c8f58b42d297e65ee44fe3bd108583ef97f48",
+  "problems": [],
+  "records": 5000,
+  "sealed": true,
+  "seq": 5,
+  "skipped_open": []
+}
+rc=0
+
+$ ulpf verify
+✓ Signatures
+✓ Manifest chain
+✓ File hashes
+✓ Merkle roots
+✓ Record hashes
+✓ Archive coverage
+✓ Head
+✓ Declared gaps
+    2026-10-07/raw-20261007T1052-ulpf-collector-01.ndjson: 1108 empty line(s) declared at seal time (no record; see `ulpf account`/`ulpf repair`)
+    2026-10-07/raw-20261007T1053-ulpf-collector-01.ndjson: 203 empty line(s) declared at seal time (no record; see `ulpf account`/`ulpf repair`)
+5 manifest(s), 29036 record(s), 1311 declared gap line(s), head: 5 18271485d77738a3515fd736590ad2eb8d3b6a78cc9e38caaf993e2b64fa3ff3
+VERIFY: PASS
+rc=0

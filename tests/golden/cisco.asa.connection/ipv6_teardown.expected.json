@@ -1,0 +1,157 @@
+{
+  "action": "Allowed",
+  "action_id": 1,
+  "activity_id": 2,
+  "activity_name": "Close",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "community_uid": "1:Hr7hL5iCRLJSc3q91Np3ZgT68fQ=",
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "udp",
+    "protocol_num": 17,
+    "uid": "99"
+  },
+  "disposition": "Allowed",
+  "disposition_id": 1,
+  "dst_endpoint": {
+    "interface_name": "outside",
+    "ip": "2001:db8:ffff::1",
+    "port": 53
+  },
+  "is_src_dst_assignment_known": false,
+  "metadata": {
+    "event_code": "302016",
+    "log_format": "syslog+text",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "f246d999-a558-5246-abd7-72b3e2291869",
+        "log_format": "syslog+text",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "Oct 07 2026 10:15:31",
+    "product": {
+      "name": "Secure Firewall ASA",
+      "vendor_name": "Cisco"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "cisco.asa.connection",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "5e4bfffa49b51cdb5d4f4a6e2f834a221ce69186ef4195cf3444d3b97e8f4667"
+      }
+    ],
+    "uid": "f246d999-a558-5246-abd7-72b3e2291869",
+    "version": "1.9.0"
+  },
+  "raw_data": "<166>Oct 07 2026 10:15:31: %ASA-6-302016: Teardown UDP connection 99 for inside:2001:db8::10/5353 to outside:2001:db8:ffff::1/53 duration 0:00:01 bytes 120",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "9cd200a6a944904ef14811d8b2f61c04c4e515b9e689e99dc90fce72327e12ca"
+  },
+  "raw_data_size": 155,
+  "severity": "Informational",
+  "severity_id": 1,
+  "src_endpoint": {
+    "interface_name": "inside",
+    "ip": "2001:db8::10",
+    "port": 5353
+  },
+  "time": 1791368131000,
+  "traffic": {
+    "bytes": 120
+  },
+  "type_name": "Network Activity: Close",
+  "type_uid": 400102,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 14,
+      "mapped": 13,
+      "unmapped": 1
+    },
+    "event_uid": "f246d999-a558-5246-abd7-72b3e2291869",
+    "fingerprint": "01972e82655e273b",
+    "format": "syslog+text",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "const",
+      "activity_id": "enum:event",
+      "connection_info.community_uid": "derived:community_id",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "transport",
+      "connection_info.protocol_num": "derived:iana_protocol_num(connection_info.protocol_name)",
+      "connection_info.uid": "conn_id",
+      "disposition_id": "const",
+      "dst_endpoint.interface_name": "b_if",
+      "dst_endpoint.ip": "b_ip",
+      "dst_endpoint.port": "b_port",
+      "is_src_dst_assignment_known": "const",
+      "metadata.event_code": "message_id",
+      "severity_id": "enum:asa_level",
+      "src_endpoint.interface_name": "a_if",
+      "src_endpoint.ip": "a_ip",
+      "src_endpoint.port": "a_port",
+      "time": "asa_ts",
+      "traffic.bytes": "bytes"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "cisco.asa.connection",
+      "spec_sha256": "5e4bfffa49b51cdb5d4f4a6e2f834a221ce69186ef4195cf3444d3b97e8f4667",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 155,
+      "sha256": "9cd200a6a944904ef14811d8b2f61c04c4e515b9e689e99dc90fce72327e12ca",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": "UTC",
+      "field": "asa_ts",
+      "format": "%b %d %Y %H:%M:%S",
+      "skew_ms": 6269000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "duration": "0:00:01"
+  }
+}

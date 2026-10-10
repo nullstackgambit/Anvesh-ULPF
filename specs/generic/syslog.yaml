@@ -1,0 +1,59 @@
+# Generic syslog (RFC 3164 / RFC 5424) catch-all -> OCSF Base Event.
+# Format-level only: no vendor semantics, so events keep status=fallback and
+# stay in the onboarding queue, but with header fields, message and time.
+id: ulpf.generic.syslog
+version: 1.0.0
+status: approved
+generic: true
+vendor: Generic
+product: Syslog
+references:
+  - https://www.rfc-editor.org/rfc/rfc5424
+  - https://www.rfc-editor.org/rfc/rfc3164
+samples: synthetic
+priority: 10
+ocsf:
+  class: base_event
+  profiles: [host, security_control]
+match:
+  all:
+    - {layer: syslog}
+parse:
+  kind: regex
+  input: body
+  include_syslog: true
+  regex: {pattern: '^(?P<msg>(?s:.*))$'}
+time:
+  - {field: syslog.timestamp_raw, format: rfc3339}
+  - {field: syslog.timestamp_raw, format: "%b %e %H:%M:%S", timezone: UTC, year: infer}
+fields:
+  msg:             {to: message, type: string}
+  syslog.hostname: {to: device.hostname, type: string}
+  syslog.appname:  {to: metadata.log_provider, type: string}
+enums:
+  - source: syslog.severity
+    map:
+      emergency: {severity_id: 6}
+      emerg: {severity_id: 6}
+      alert: {severity_id: 5}
+      critical: {severity_id: 5}
+      crit: {severity_id: 5}
+      error: {severity_id: 4}
+      err: {severity_id: 4}
+      warning: {severity_id: 3}
+      notice: {severity_id: 1}
+      informational: {severity_id: 1}
+      info: {severity_id: 1}
+      debug: {severity_id: 1}
+    default: {severity_id: 99}
+tests:
+  - name: rfc3164_line
+    raw: "<38>Oct  7 10:15:30 host1 sshd[4242]: Accepted publickey for alice from 10.0.0.5 port 50000 ssh2"
+    expect:
+      ulpf.status: fallback
+      class_uid: 0
+      message: "Accepted publickey for alice from 10.0.0.5 port 50000 ssh2"
+      device.hostname: host1
+      metadata.log_provider: sshd
+      severity_id: 1
+      time: 1791368130000

@@ -1,0 +1,179 @@
+# FortiGate traffic logs -> OCSF 1.9.0 Network Activity (4001)
+#
+# Field names/types verified against the FortiOS 7.6.0 Log Message Reference,
+# LOG_ID_TRAFFIC_END_FORWARD (0000000013); extracted field table:
+# verification/vendor_refs/fortios-7.6.0-0000000013-traffic-end-forward.json
+#
+# Mapping decisions that are ULPF policy (not vendor-defined) are marked POLICY.
+id: fortinet.fortigate.traffic
+version: 1.1.0
+status: approved
+vendor: Fortinet
+product: FortiGate
+description: >
+  FortiOS traffic logs (type=traffic) sent over syslog as space-separated
+  key=value pairs. Accepts a bare <PRI> header, RFC 3164 and RFC 5424 headers.
+references:
+  - https://docs.fortinet.com/document/fortigate/7.6.0/fortios-log-message-reference/13/13-log-id-traffic-end-forward
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: [host, security_control]
+
+match:
+  all:
+    - {field: kv.type, equals: traffic}
+    - {field: kv.logid, regex: '^[0-9]{10}$'}
+    - {field: kv.devid, exists: true}
+
+parse:
+  kind: kv
+  input: body
+  kv: {field_delimiter: " ", value_delimiter: "="}
+
+time:
+  # eventtime: "Epoch time in nanoseconds" (uint64) in 7.6; older firmware
+  # used other units, so the unit is inferred from the digit count.
+  - {field: eventtime, format: epoch_auto}
+  - {fields: [date, time], format: "%Y-%m-%d %H:%M:%S", offset_field: tz}
+  - {fields: [date, time], format: "%Y-%m-%d %H:%M:%S", timezone: UTC}
+
+fields:
+  srcip:     {to: src_endpoint.ip, type: ip}
+  srcport:   {to: src_endpoint.port, type: port}
+  srcintf:   {to: src_endpoint.interface_name, type: string}
+  srcmac:    {to: src_endpoint.mac, type: mac}
+  dstip:     {to: dst_endpoint.ip, type: ip}
+  dstport:   {to: dst_endpoint.port, type: port}
+  dstintf:   {to: dst_endpoint.interface_name, type: string}
+  dstmac:    {to: dst_endpoint.mac, type: mac}
+  sessionid: {to: connection_info.uid, type: string}
+  proto:     {to: connection_info.protocol_num, type: int}       # "Protocol Number" (uint8)
+  # OCSF bytes_out = "sent from the source to the destination"; FortiGate
+  # sentbyte = bytes sent by the session originator (Fortinet's own CEF
+  # mapping is sentbyte->out, rcvdbyte->in).
+  sentbyte:  {to: traffic.bytes_out, type: long}
+  rcvdbyte:  {to: traffic.bytes_in, type: long}
+  sentpkt:   {to: traffic.packets_out, type: long}
+  rcvdpkt:   {to: traffic.packets_in, type: long}
+  policyid:  {to: firewall_rule.uid, type: string}               # "Firewall Policy ID"
+  app:       {to: app_name, type: string}                        # "Application name"
+  devname:   {to: device.hostname, type: string}
+  devid:     {to: device.uid, type: string}                      # "Device Serial Number"
+  logid:     {to: metadata.event_code, type: string}
+  type:      {to: metadata.log_name, type: string}
+  msg:       {to: message, type: string}
+  duration:
+    unmapped: true
+    note: >
+      OCSF 1.9.0 defines duration/start_time/end_time for aggregate events
+      only (count > 1); a per-session duration has no faithful attribute.
+  service:
+    unmapped: true
+    note: "service name such as HTTPS; OCSF svc_name means service-to-service, not this"
+  srccountry:
+    unmapped: true
+    note: "country NAME; OCSF location.country expects an ISO 3166-1 alpha-2 code"
+  dstcountry:
+    unmapped: true
+    note: "country NAME; OCSF location.country expects an ISO 3166-1 alpha-2 code"
+
+enums:
+  # action: "The status of the session" (documented values below).
+  # POLICY: activity/action/disposition chosen per value.
+  - source: action
+    map:
+      accept:     {activity_id: 6, action_id: 1, disposition_id: 1}   # allowed forward (traffic)
+      close:      {activity_id: 2, action_id: 1, disposition_id: 1}   # closed by FIN
+      timeout:    {activity_id: 2, action_id: 1, disposition_id: 1}   # allowed session timed out
+      client-rst: {activity_id: 3, action_id: 1, disposition_id: 1}   # reset by client
+      server-rst: {activity_id: 3, action_id: 1, disposition_id: 1}   # reset by server
+      start:      {activity_id: 1, action_id: 1, disposition_id: 1}   # session start
+      deny:       {activity_id: 5, action_id: 2, disposition_id: 2}   # denied -> Refuse/Denied/Blocked
+      ip-conn:    {activity_id: 4, action_id: 0, disposition_id: 0}   # failed connection attempt
+      dns:        {activity_id: 4, action_id: 0, disposition_id: 0}   # DNS query returned an error
+    default: {activity_id: 99, action_id: 99, disposition_id: 99}
+    missing: {activity_id: 0, action_id: 0, disposition_id: 0}
+  # level: log level. POLICY: syslog-style levels -> OCSF severity.
+  - source: level
+    map:
+      emergency:   {severity_id: 6}
+      alert:       {severity_id: 5}
+      critical:    {severity_id: 5}
+      error:       {severity_id: 4}
+      warning:     {severity_id: 3}
+      notice:      {severity_id: 1}
+      information: {severity_id: 1}
+      debug:       {severity_id: 1}
+    default: {severity_id: 99}
+    missing: {severity_id: 0}
+
+set:
+  device.type_id: 9          # Firewall
+  # srcip/src are documented as the session source (originator)
+  is_src_dst_assignment_known: true
+
+derive:
+  - {to: connection_info.protocol_name, using: iana_protocol_name, from: connection_info.protocol_num}
+  - {to: connection_info.community_uid, using: community_id}
+  - {to: timezone_offset, using: tz_offset_minutes, source: tz}
+
+tests:
+  - name: tcp_close_allowed
+    raw: '<189>date=2026-10-07 time=10:15:30 devname="FGT-HQ-01" devid="FGT60FTK00000001" eventtime=1791368130123456789 tz="+0000" logid="0000000013" type="traffic" subtype="forward" level="notice" vd="root" srcip=10.1.1.10 srcport=51234 srcintf="port1" srcintfrole="lan" dstip=203.0.113.10 dstport=443 dstintf="wan1" dstintfrole="wan" sessionid=123456 proto=6 action="close" policyid=5 policytype="policy" service="HTTPS" trandisp="snat" transip=198.51.100.1 transport=51234 duration=12 sentbyte=1520 rcvdbyte=8240 sentpkt=12 rcvdpkt=10 appcat="unscanned"'
+    expect:
+      ulpf.status: parsed
+      ulpf.parser.id: fortinet.fortigate.traffic
+      time: 1791368130123
+      src_endpoint.ip: 10.1.1.10
+      src_endpoint.port: 51234
+      dst_endpoint.ip: 203.0.113.10
+      dst_endpoint.port: 443
+      connection_info.protocol_num: 6
+      connection_info.protocol_name: tcp
+      activity_id: 2
+      action_id: 1
+      action: Allowed
+      disposition_id: 1
+      traffic.bytes_out: 1520
+      traffic.bytes_in: 8240
+      timezone_offset: 0
+      device.type: Firewall
+  - name: udp_deny
+    raw: '<189>date=2026-10-07 time=11:00:00 devname="FGT-HQ-01" devid="FGT60FTK00000001" eventtime=1791370800000000000 tz="+0530" logid="0000000013" type="traffic" subtype="forward" level="warning" vd="root" srcip=10.2.3.4 srcport=40000 dstip=198.51.100.53 dstport=53 sessionid=77 proto=17 action="deny" policyid=0 sentbyte=0 rcvdbyte=0'
+    expect:
+      ulpf.status: parsed
+      activity_id: 5
+      action_id: 2
+      action: Denied
+      disposition_id: 2
+      disposition: Blocked
+      severity_id: 3
+      connection_info.protocol_name: udp
+      timezone_offset: 330
+  - name: invalid_port_is_partial
+    raw: '<189>date=2026-10-07 time=11:00:01 devid="FGT60FTK00000001" eventtime=1791370801000000000 logid="0000000013" type="traffic" subtype="forward" level="notice" srcip=10.2.3.4 srcport=abc dstip=198.51.100.53 dstport=53 proto=17 action="accept"'
+    expect:
+      ulpf.status: partial
+      unmapped.srcport: abc
+      src_endpoint.ip: 10.2.3.4
+  - name: invalid_ip_is_partial
+    raw: '<189>date=2026-10-07 time=11:00:02 devid="FGT60FTK00000001" eventtime=1791370802000000000 logid="0000000013" type="traffic" subtype="forward" level="notice" srcip=10.1.1.300 dstip=198.51.100.53 dstport=53 proto=17 action="accept"'
+    expect:
+      ulpf.status: partial
+      unmapped.srcip: 10.1.1.300
+  - name: unknown_action_is_other
+    raw: '<189>date=2026-10-07 time=11:00:03 devid="FGT60FTK00000001" eventtime=1791370803000000000 logid="0000000013" type="traffic" subtype="forward" level="notice" srcip=10.2.3.4 dstip=198.51.100.53 dstport=53 proto=17 action="quarantine-xyz"'
+    expect:
+      ulpf.status: partial
+      activity_id: 99
+      activity_name: quarantine-xyz
+      action_id: 99
+      action: quarantine-xyz
+  - name: rfc5424_header_no_eventtime
+    raw: '<189>1 2026-10-07T11:05:00Z FGT-HQ-01 - - - - date=2026-10-07 time=16:35:00 tz="+0530" devid="FGT60FTK00000001" logid="0000000013" type="traffic" subtype="forward" level="notice" srcip=10.9.9.9 srcport=1111 dstip=203.0.113.99 dstport=80 proto=6 action="accept"'
+    expect:
+      ulpf.status: parsed
+      time: 1791371100000
+      activity_id: 6

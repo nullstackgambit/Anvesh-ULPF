@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ulpf:schema:provenance:1",
+  "title": "ULPF envelope",
+  "description": "The top-level `ulpf` object of a normalized ULPF document (the only non-OCSF key, ADR-001). Cross-field rules are enforced in ulpf/provenance.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "event_uid", "status", "reasons", "format", "fingerprint", "ingest", "raw", "time"],
+  "properties": {
+    "v": {"const": 1},
+    "event_uid": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "status": {"enum": ["parsed", "partial", "fallback", "failed"]},
+    "reasons": {"type": "array", "items": {"type": "string"}},
+    "errors": {
+      "type": "array",
+      "items": {"type": "object", "required": ["code"], "properties": {"code": {"type": "string"}}}
+    },
+    "parser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {"type": "string"},
+        "version": {"type": "string"},
+        "spec_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "compiler": {"type": "string"}
+      }
+    },
+    "format": {"type": "string", "minLength": 1},
+    "fingerprint": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+    "ingest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time", "time_ms", "collector_id", "transport", "peer"],
+      "properties": {
+        "time": {"type": "string"},
+        "time_ms": {"type": "integer"},
+        "collector_id": {"type": "string"},
+        "transport": {"type": "string"},
+        "peer": {"type": "object"}
+      }
+    },
+    "raw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "len", "utf8"],
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "len": {"type": "integer", "minimum": 0},
+        "utf8": {"type": "boolean"},
+        "b64": {"type": "string"}
+      }
+    },
+    "time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": {"enum": ["field", "ingest"]},
+        "field": {"type": "string"},
+        "format": {"type": "string"},
+        "assumed_timezone": {"type": ["string", "null"]},
+        "year_inferred": {"type": "boolean"},
+        "skew_ms": {"type": "integer"},
+        "note": {"type": "string"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fields", "mapped", "unmapped", "empty"],
+      "properties": {
+        "fields": {"type": "integer", "minimum": 0},
+        "mapped": {"type": "integer", "minimum": 0},
+        "unmapped": {"type": "integer", "minimum": 0},
+        "empty": {"type": "integer", "minimum": 0},
+        "empty_fields": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "lineage": {"type": "object", "additionalProperties": {"type": "string"}},
+    "replay": {"type": "object", "properties": {"run": {"type": "string"}}},
+    "integrity_error": {"type": "string"}
+  }
+}

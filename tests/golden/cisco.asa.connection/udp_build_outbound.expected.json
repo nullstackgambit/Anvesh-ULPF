@@ -1,0 +1,156 @@
+{
+  "action": "Allowed",
+  "action_id": 1,
+  "activity_id": 1,
+  "activity_name": "Open",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "community_uid": "1:oN9TZxsqjTcnQwV+06gSzuia/zE=",
+    "direction": "Outbound",
+    "direction_id": 2,
+    "protocol_name": "udp",
+    "protocol_num": 17,
+    "uid": "77"
+  },
+  "disposition": "Allowed",
+  "disposition_id": 1,
+  "dst_endpoint": {
+    "interface_name": "outside",
+    "ip": "198.51.100.53",
+    "port": 53
+  },
+  "is_src_dst_assignment_known": false,
+  "metadata": {
+    "event_code": "302015",
+    "log_format": "syslog+text",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "9fd27ccf-b708-574b-96a8-c55a5622a658",
+        "log_format": "syslog+text",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "Oct 07 2026 11:00:00",
+    "product": {
+      "name": "Secure Firewall ASA",
+      "vendor_name": "Cisco"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "cisco.asa.connection",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "5e4bfffa49b51cdb5d4f4a6e2f834a221ce69186ef4195cf3444d3b97e8f4667"
+      }
+    ],
+    "uid": "9fd27ccf-b708-574b-96a8-c55a5622a658",
+    "version": "1.9.0"
+  },
+  "raw_data": "<166>Oct 07 2026 11:00:00: %ASA-6-302015: Built outbound UDP connection 77 for inside:10.2.3.4/40000 (10.2.3.4/40000) to outside:198.51.100.53/53 (198.51.100.53/53)",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "63358709bd08932cc119544a9f7fb3cea3d0488549dd5a6251e3f5db879a1196"
+  },
+  "raw_data_size": 164,
+  "severity": "Informational",
+  "severity_id": 1,
+  "src_endpoint": {
+    "interface_name": "inside",
+    "ip": "10.2.3.4",
+    "port": 40000
+  },
+  "time": 1791370800000,
+  "type_name": "Network Activity: Open",
+  "type_uid": 400101,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 17,
+      "mapped": 13,
+      "unmapped": 4
+    },
+    "event_uid": "9fd27ccf-b708-574b-96a8-c55a5622a658",
+    "fingerprint": "01972e82655e273b",
+    "format": "syslog+text",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "const",
+      "activity_id": "enum:event",
+      "connection_info.community_uid": "derived:community_id",
+      "connection_info.direction_id": "enum:direction",
+      "connection_info.protocol_name": "transport",
+      "connection_info.protocol_num": "derived:iana_protocol_num(connection_info.protocol_name)",
+      "connection_info.uid": "conn_id",
+      "disposition_id": "const",
+      "dst_endpoint.interface_name": "b_if",
+      "dst_endpoint.ip": "b_ip",
+      "dst_endpoint.port": "b_port",
+      "is_src_dst_assignment_known": "const",
+      "metadata.event_code": "message_id",
+      "severity_id": "enum:asa_level",
+      "src_endpoint.interface_name": "a_if",
+      "src_endpoint.ip": "a_ip",
+      "src_endpoint.port": "a_port",
+      "time": "asa_ts"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "cisco.asa.connection",
+      "spec_sha256": "5e4bfffa49b51cdb5d4f4a6e2f834a221ce69186ef4195cf3444d3b97e8f4667",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 164,
+      "sha256": "63358709bd08932cc119544a9f7fb3cea3d0488549dd5a6251e3f5db879a1196",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": "UTC",
+      "field": "asa_ts",
+      "format": "%b %d %Y %H:%M:%S",
+      "skew_ms": 3600000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "a_mapped_ip": "10.2.3.4",
+    "a_mapped_port": "40000",
+    "b_mapped_ip": "198.51.100.53",
+    "b_mapped_port": "53"
+  }
+}

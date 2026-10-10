@@ -1,0 +1,31 @@
+# ULPF live envelope (static, version-controlled; rendered into the generated
+# Vector config by `ulpf compile`). Placeholders: @@COLLECTOR_ID@@
+#
+# Input : .message   bytes exactly as framed by the source (bytes codec)
+#         .timestamp receipt time set by the source
+#         .ulpf_t    transport tag, .ulpf_peer peer info (set per source)
+# Output: {_raw: <same bytes>, timestamp, ulpf: {v, event_uid, ingest, raw}}
+#         (._raw is private: OCSF owns the name `message`)
+#
+# Nothing here parses the payload. The raw bytes are hashed before anything
+# else touches them; the archive branch base64-encodes the same bytes.
+raw = string!(.message)
+ts = timestamp(.timestamp) ?? now()
+u = {}
+u.v = 1
+u.event_uid = uuid_v7(ts)
+u.ingest = {
+  "time": format_timestamp!(ts, format: "%Y-%m-%dT%H:%M:%S%.9fZ", timezone: "UTC"),
+  "time_ms": to_unix_timestamp(ts, unit: "milliseconds"),
+  "collector_id": "@@COLLECTOR_ID@@",
+  "transport": string(.ulpf_t) ?? "unknown",
+  "peer": object(.ulpf_peer) ?? {}
+}
+u.raw = {
+  "sha256": sha2(raw, variant: "SHA-256"),
+  "len": length(raw),
+  # VRL 0.58 has no is_valid_utf8(); a JSON round trip is the identity on
+  # valid UTF-8 and replaces invalid bytes with U+FFFD (P0 finding V17).
+  "utf8": (parse_json(encode_json(raw)) ?? null) == raw
+}
+. = {"_raw": raw, "timestamp": ts, "ulpf": u}

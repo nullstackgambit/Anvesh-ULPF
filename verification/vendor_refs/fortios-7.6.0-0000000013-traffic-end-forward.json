@@ -1,0 +1,868 @@
+{
+ "source_url": "https://docs.fortinet.com/document/fortigate/7.6.0/fortios-log-message-reference/13/13-log-id-traffic-end-forward",
+ "retrieved": "2026-10-07",
+ "page_sha256": "0ab35c0b98f10324a0da75c5977dbef0afaa3e545a4244d8285e2fc6fc905943",
+ "message_meta": {},
+ "fields": [
+  {
+   "field": "accessctrl",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "accessproxy",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "action",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "agent",
+   "type": "string",
+   "length": "1024"
+  },
+  {
+   "field": "ap",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "app",
+   "type": "string",
+   "length": "96"
+  },
+  {
+   "field": "appact",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "appcat",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "appid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "applist",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "apprisk",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "apsn",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "authserver",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "centralnatid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "channel",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "clientcert",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "clientdeviceems",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "clientdeviceid",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "clientdevicemanageable",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "clientdeviceowner",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "clientdevicetags",
+   "type": "string",
+   "length": "512"
+  },
+  {
+   "field": "comment",
+   "type": "string",
+   "length": "1024"
+  },
+  {
+   "field": "countapp",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countav",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countcasb",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countcifs",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countdlp",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countdns",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countemail",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countff",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "counticap",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countips",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countsctpf",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countssh",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countssl",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countvpatch",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countwaf",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "countweb",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "craction",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "crlevel",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "crscore",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "date",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "devid",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "devtype",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstauthserver",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "dstcity",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "dstcountry",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "dstdevtype",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstfamily",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dsthwvendor",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dsthwversion",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstinetsvc",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "dstintf",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "dstintfrole",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "dstip",
+   "type": "ip",
+   "length": "39"
+  },
+  {
+   "field": "dstmac",
+   "type": "string",
+   "length": "17"
+  },
+  {
+   "field": "dstname",
+   "type": "string",
+   "length": "256"
+  },
+  {
+   "field": "dstosname",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "dstregion",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "dstreputation",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "dstserver",
+   "type": "uint8",
+   "length": "3"
+  },
+  {
+   "field": "dstssid",
+   "type": "string",
+   "length": "33"
+  },
+  {
+   "field": "dstswversion",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstthreatfeed",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "dstunauthuser",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstunauthusersource",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "dstuser",
+   "type": "string",
+   "length": "256"
+  },
+  {
+   "field": "dstuuid",
+   "type": "string",
+   "length": "37"
+  },
+  {
+   "field": "duration",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "durationdelta",
+   "type": "uint32",
+   "length": "20"
+  },
+  {
+   "field": "emsconnection",
+   "type": "string",
+   "length": "8"
+  },
+  {
+   "field": "emstag",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "emstag2",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "eventtime",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "fctuid",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "fwdsrv",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "gatewayid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "group",
+   "type": "string",
+   "length": "512"
+  },
+  {
+   "field": "identifier",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "lanin",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "lanout",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "level",
+   "type": "string",
+   "length": "11"
+  },
+  {
+   "field": "logid",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "masterdstmac",
+   "type": "string",
+   "length": "17"
+  },
+  {
+   "field": "mastersrcmac",
+   "type": "string",
+   "length": "17"
+  },
+  {
+   "field": "msg",
+   "type": "string",
+   "length": "512"
+  },
+  {
+   "field": "osname",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "pdstport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "policyid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "policymode",
+   "type": "string",
+   "length": "8"
+  },
+  {
+   "field": "policyname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "policytype",
+   "type": "string",
+   "length": "24"
+  },
+  {
+   "field": "poluuid",
+   "type": "string",
+   "length": "37"
+  },
+  {
+   "field": "proto",
+   "type": "uint8",
+   "length": "3"
+  },
+  {
+   "field": "proxyapptype",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "psrcport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "radioband",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "rcvdbyte",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "rcvddelta",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "rcvdpkt",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "rcvdpktdelta",
+   "type": "uint32",
+   "length": "20"
+  },
+  {
+   "field": "realserverid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "replydstintf",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "replysrcintf",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "saasname",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "sentbyte",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "sentdelta",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "sentpkt",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "sentpktdelta",
+   "type": "uint32",
+   "length": "20"
+  },
+  {
+   "field": "service",
+   "type": "string",
+   "length": "80"
+  },
+  {
+   "field": "sessionid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "shaperdroprcvdbyte",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "shaperdropsentbyte",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "shaperperipdropbyte",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "shaperperipname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "shaperrcvdname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "shapersentname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "shapingpolicyid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "shapingpolicyname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "signal",
+   "type": "int8",
+   "length": "4"
+  },
+  {
+   "field": "snr",
+   "type": "int8",
+   "length": "4"
+  },
+  {
+   "field": "srccity",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "srccountry",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "srcdomain",
+   "type": "string",
+   "length": "255"
+  },
+  {
+   "field": "srcfamily",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "srchwvendor",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "srchwversion",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "srcinetsvc",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "srcintf",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "srcintfrole",
+   "type": "string",
+   "length": "10"
+  },
+  {
+   "field": "srcip",
+   "type": "ip",
+   "length": "39"
+  },
+  {
+   "field": "srcmac",
+   "type": "string",
+   "length": "17"
+  },
+  {
+   "field": "srcmacvendor",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "srcname",
+   "type": "string",
+   "length": "256"
+  },
+  {
+   "field": "srcport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "srcregion",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "srcremote",
+   "type": "ip",
+   "length": "39"
+  },
+  {
+   "field": "srcreputation",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "srcserver",
+   "type": "uint8",
+   "length": "3"
+  },
+  {
+   "field": "srcssid",
+   "type": "string",
+   "length": "33"
+  },
+  {
+   "field": "srcswversion",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "srcthreatfeed",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "srcuuid",
+   "type": "string",
+   "length": "37"
+  },
+  {
+   "field": "sslaction",
+   "type": "string",
+   "length": "26"
+  },
+  {
+   "field": "subtype",
+   "type": "string",
+   "length": "20"
+  },
+  {
+   "field": "time",
+   "type": "string",
+   "length": "8"
+  },
+  {
+   "field": "trandisp",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "tranip",
+   "type": "ip",
+   "length": "39"
+  },
+  {
+   "field": "tranport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "transip",
+   "type": "ip",
+   "length": "39"
+  },
+  {
+   "field": "transport",
+   "type": "uint16",
+   "length": "5"
+  },
+  {
+   "field": "tunnelid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "type",
+   "type": "string",
+   "length": "16"
+  },
+  {
+   "field": "tz",
+   "type": "string",
+   "length": "5"
+  },
+  {
+   "field": "unauthuser",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "unauthusersource",
+   "type": "string",
+   "length": "66"
+  },
+  {
+   "field": "url",
+   "type": "string",
+   "length": "512"
+  },
+  {
+   "field": "user",
+   "type": "string",
+   "length": "256"
+  },
+  {
+   "field": "utmaction",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "vd",
+   "type": "string",
+   "length": "32"
+  },
+  {
+   "field": "vip",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "vpntype",
+   "type": "string",
+   "length": "14"
+  },
+  {
+   "field": "vrf",
+   "type": "uint8",
+   "length": "3"
+  },
+  {
+   "field": "vwlid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "vwlname",
+   "type": "string",
+   "length": "36"
+  },
+  {
+   "field": "vwlquality",
+   "type": "string",
+   "length": "320"
+  },
+  {
+   "field": "vwlservice",
+   "type": "string",
+   "length": "64"
+  },
+  {
+   "field": "vwpvlanid",
+   "type": "uint32",
+   "length": "10"
+  },
+  {
+   "field": "wanin",
+   "type": "uint64",
+   "length": "20"
+  },
+  {
+   "field": "wanoptapptype",
+   "type": "string",
+   "length": "9"
+  },
+  {
+   "field": "wanout",
+   "type": "uint64",
+   "length": "20"
+  }
+ ]
+}

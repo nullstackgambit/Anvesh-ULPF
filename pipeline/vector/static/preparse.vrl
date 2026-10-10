@@ -1,0 +1,171 @@
+# ULPF pre-parse (static). Placeholders: @@MAX_PARSE_BYTES@@
+#
+# Detects generic format layers once per event so that every spec can match
+# and parse against them. Nothing is discarded: the raw bytes stay in ._raw and
+# every layer is stored side by side in ._pre:
+#   ._pre.pri          syslog PRI value (if "<n>" prefix)
+#   ._pre.after_pri    text after "<n>" (raw minus PRI) -- use this when
+#                      parse_syslog misattributes fields (P0 finding V9)
+#   ._pre.syslog       parse_syslog() result (if it parsed)
+#   ._pre.syslog_ts_raw the header timestamp *as written* (zone/year may be missing)
+#   ._pre.body         message body: syslog message, else after_pri, else raw
+#   ._pre.json|cef|leef|kv|csv  payload layers that parsed
+# Layer names are recorded in .ulpf.format (e.g. "syslog+kv").
+raw = string!(._raw)
+pre = {}
+layers = []
+# Parse a copy without one trailing line terminator; the raw bytes are untouched.
+text = replace(raw, r'\r?\n\z', "")
+body = text
+head = text
+
+if (int(.ulpf.raw.len) ?? 0) > @@MAX_PARSE_BYTES@@ {
+  .ulpf.oversized = true
+} else {
+  # ------------------------------------------------------------- PRI/syslog
+  m = parse_regex(text, r'(?s)\A<(?P<pri>\d{1,3})>(?P<rest>.*)\z') ?? null
+  if m != null {
+    pre.pri = to_int(m.pri) ?? null
+    head = string(m.rest) ?? ""
+    pre.after_pri = head
+    body = head
+    sl, sl_err = parse_syslog(text)
+    if sl_err == null {
+      pre.syslog = sl
+      body = string(sl.message) ?? ""
+      layers = push(layers, "syslog")
+    } else {
+      layers = push(layers, "pri")
+    }
+  } else if match(text, r'\A[A-Z][a-z]{2} [ 0-9]\d \d{2}:\d{2}:\d{2} \S') {
+    sl, sl_err = parse_syslog(text)
+    if sl_err == null {
+      pre.syslog = sl
+      body = string(sl.message) ?? ""
+      layers = push(layers, "syslog")
+    }
+  }
+  if exists(pre.syslog) {
+    tsm = parse_regex(head, r'\A(?:1 )?(?P<ts>[A-Z][a-z]{2} [ 0-9]\d(?: \d{4})? \d{2}:\d{2}:\d{2}|\d{4}-\d{2}-\d{2}T\S+)') ?? null
+    if tsm != null { pre.syslog_ts_raw = tsm.ts }
+  }
+
+  # ------------------------------------------------------------ payload
+  # CEF/LEEF are located by regex on the text after PRI, not on the syslog
+  # message: an RFC 3164 parser would take "CEF" for the app name.
+  cefm = parse_regex(head, r'(?s)(?P<p>CEF:\d+\|.*)\z') ?? null
+  leefm = parse_regex(head, r'(?s)(?P<p>LEEF:[0-9.]+\|.*)\z') ?? null
+  trimmed = strip_whitespace(body)
+  if cefm != null {
+    cef, cef_err = parse_cef(string(cefm.p) ?? "")
+    if cef_err == null {
+      pre.cef = cef
+      layers = push(layers, "cef")
+    } else {
+      layers = push(layers, "cef_invalid")
+    }
+  } else if leefm != null {
+    # LEEF 1.0: LEEF:1.0|Vendor|Product|Version|EventID|k=v<TAB>k=v
+    # LEEF 2.0: LEEF:2.0|Vendor|Product|Version|EventID|<delim>|k=v<delim>k=v
+    #           <delim> is one character, or a hex value: prefix 0x or x
+    #           followed by 1-4 hex digits (IBM QRadar LEEF format guide).
+    h = parse_regex(string(leefm.p) ?? "", r'(?s)\ALEEF:(?P<version>[0-9.]+)\|(?P<vendor>[^|]*)\|(?P<product>[^|]*)\|(?P<product_version>[^|]*)\|(?P<event_id>[^|]*)\|(?P<rest>.*)\z') ?? null
+    if h != null {
+      delim = "\t"
+      attrs = string(h.rest) ?? ""
+      if starts_with(string(h.version) ?? "", "2") {
+        d = parse_regex(attrs, r'(?s)\A(?P<d>(?:0?x[0-9A-Fa-f]{1,4})|[^|]?)\|(?P<attrs>.*)\z') ?? null
+        if d != null {
+          attrs = string(d.attrs) ?? ""
+          dv = string(d.d) ?? ""
+          hex = parse_regex(dv, r'\A0?x(?P<h>[0-9A-Fa-f]{1,4})\z') ?? null
+          if hex != null {
+            hh = upcase(string(hex.h) ?? "0009")
+            if length(hh) == 1 { hh = "000" + hh }
+            if length(hh) == 2 { hh = "00" + hh }
+            if length(hh) == 3 { hh = "0" + hh }
+            # a JSON "\uXXXX" escape decodes any of the 1-4 digit code points
+            delim = string(parse_json("\"\\u" + hh + "\"") ?? "\t") ?? "\t"
+          } else if dv != "" {
+            delim = dv
+          }
+        }
+      }
+      kv, kv_err = parse_key_value(attrs, key_value_delimiter: "=", field_delimiter: delim)
+      leef_attrs = {}
+      leef_layer = "leef_invalid"
+      if kv_err == null {
+        leef_attrs = kv
+        leef_layer = "leef"
+      }
+      pre.leef = {
+        "version": h.version, "vendor": h.vendor, "product": h.product,
+        "product_version": h.product_version, "event_id": h.event_id,
+        "delimiter": delim, "attributes": leef_attrs
+      }
+      layers = push(layers, leef_layer)
+    } else {
+      layers = push(layers, "leef_invalid")
+    }
+  } else if starts_with(trimmed, "{") {
+    j, j_err = parse_json(trimmed)
+    if j_err == null && is_object(j) {
+      pre.json = j
+      layers = push(layers, "json")
+    } else {
+      layers = push(layers, "json_invalid")
+    }
+  } else {
+    kv_tokens = length(parse_regex_all(body, r'(?:\A|\s)[A-Za-z_][A-Za-z0-9_.\-]*=') ?? [])
+    commas = length(split(body, ",")) - 1
+    if kv_tokens >= 3 {
+      kv, kv_err = parse_key_value(body)
+      if kv_err == null {
+        pre.kv = kv
+        layers = push(layers, "kv")
+      }
+    } else if commas >= 4 {
+      cols, csv_err = parse_csv(body)
+      if csv_err == null {
+        pre.csv = cols
+        layers = push(layers, "csv")
+      }
+    } else {
+      layers = push(layers, "text")
+    }
+  }
+  pre.body = body
+}
+
+# ------------------------------------------------------------ fingerprint
+# A structural signature (layers + syslog app + key set / header identity),
+# used by onboarding to group unknown events and by drift detection.
+fmt = join(layers, "+") ?? "unknown"
+if fmt == "" { fmt = "unknown" }
+shape = ""
+if exists(pre.json) {
+  shape = join(keys(object(pre.json) ?? {}), ",") ?? ""
+} else if exists(pre.cef) {
+  shape = join([string(pre.cef.deviceVendor) ?? "", string(pre.cef.deviceProduct) ?? "", string(pre.cef.deviceEventClassId) ?? ""], "|") ?? ""
+} else if exists(pre.leef) {
+  shape = join([string(pre.leef.vendor) ?? "", string(pre.leef.product) ?? "", string(pre.leef.event_id) ?? ""], "|") ?? ""
+} else if exists(pre.kv) {
+  shape = join(keys(object(pre.kv) ?? {}), ",") ?? ""
+} else if exists(pre.csv) {
+  shape = "cols=" + to_string(length(array(pre.csv) ?? []))
+}
+app = string(pre.syslog.appname) ?? ""
+if shape == "" && !exists(pre.syslog) {
+  # Unframed plain text (no syslog header, no key set): the leading literal
+  # token plus a delimiter profile keeps unrelated text sources apart, so that
+  # onboarding sees one cluster per source rather than one for all text.
+  # (Syslog-framed text is told apart by the app name instead; using its
+  # first word would split one source per message type.)
+  lead = ""
+  ltm = parse_regex(body, r'\A(?P<t>[A-Za-z][A-Za-z0-9_\-]{0,31})(?:[|;, \t]|\z)') ?? null
+  if ltm != null { lead = string(ltm.t) ?? "" }
+  shape = "text:" + lead + ":p" + to_string(length(split(body, "|")) - 1) + ":s" + to_string(length(split(body, ";")) - 1)
+}
+.ulpf.format = fmt
+.ulpf.fingerprint = slice!(sha2(fmt + "|" + app + "|" + shape, variant: "SHA-256"), 0, 16)
+._pre = pre

@@ -1,0 +1,70 @@
+stopping the repository stack (restarted afterwards)
+vector: stopped
+opensearch: stopped
+ui: stopped
+
+[0s] == network check inside the sandbox
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+connect 1.1.1.1:443 -> 101 (101 = network unreachable)
+DNS pypi.org -> gaierror
+
+[0s] == install from bundle (signature + hashes, offline venv, runtime, secrets, certs, security)
+== 1/6 verify bundle
+BUNDLE.json sha256: d6c46cad761c4a1e27acb2d3bdd6733a5fff1fe8b73fd1e6c2d0eed5610e2e82
+release.pub sha256: 811f0986fb4f4dd515b0d33e6d8221559002b858099520ca01bf05da033c7eea
+bundle OK: 240 files, 533952319 bytes, ulpf 0.1.0, built 2026-10-07T11:08:03+00:00
+Signature Verified Successfully
+== 2/6 copy source tree to <repo>/runtime/airgap-test/ulpf
+== 3/6 Python environment (offline, hash-pinned wheels)
+== 4/6 runtime (Vector, OpenSearch, security plugin) from pinned artifacts
+vector installed
+opensearch installed
+opensearch-security plugin installed
+== 5/6 secrets, keys, certificates (generated here, never shipped)
+{
+  "key_id": "cc36c8e77d3682d5",
+  "private_key": "<repo>/runtime/airgap-test/ulpf/deploy/keys/seal.key",
+  "public_key": "<repo>/runtime/airgap-test/ulpf/deploy/keys/seal.pub"
+}
+{
+  "dir": "<repo>/runtime/airgap-test/ulpf/runtime/secrets",
+  "written": {
+    "opensearch-admin": "created",
+    "opensearch-ulpf-reader": "created",
+    "opensearch-ulpf-writer": "created",
+    "pii.key": "created"
+  }
+}
+{
+  "ca_sha256": "4ac4b356e5923881bbaa47f3bca3e329c3dd740fcd406f22b6ca735cc2f282a6",
+  "created": true,
+  "dir": "<repo>/runtime/airgap-test/ulpf/deploy/certs",
+  "not_after": "2029-01-09T11:12:14+00:00",
+  "note": "move deploy/certs/ulpf-ca.key offline once certificates are issued",
+  "subjects": {
+    "opensearch-admin": "CN=ulpf-admin,OU=ULPF deployment,O=ULPF",
+    "opensearch-node": "CN=ulpf-opensearch-node,OU=ULPF deployment,O=ULPF",
+    "ulpf-client": "CN=ulpf-sender,OU=ULPF deployment,O=ULPF",
+    "ulpf-server": "CN=ulpf-syslog,OU=ULPF deployment,O=ULPF"
+  }
+}
+{
+  "config_dir": "<repo>/runtime/airgap-test/ulpf/runtime/opensearch-config/opensearch-security",
+  "local_override": "<repo>/runtime/airgap-test/ulpf/runtime/ulpf.local.yaml",
+  "next": "ulpf stack down opensearch && ulpf stack up opensearch",
+  "plugin": [
+    "vector installed"
+  ],
+  "users": [
+    "admin",
+    "ulpf-reader",
+    "ulpf-writer"
+  ]
+}
+compile FAILED: Vector binary not found at <repo>/runtime/airgap-test/ulpf/runtime/vector/bin/vector (run `make runtime` or set ULPF_VECTOR_BIN)
+restarting the repository stack
+opensearch: healthy (pid 77462)
+opensearch bootstrap: {'template': 'updated', 'write_index': ['ulpf-events-v2']}
+vector: healthy (pid 77930)
+ui: healthy (pid 78056)
+exit 1

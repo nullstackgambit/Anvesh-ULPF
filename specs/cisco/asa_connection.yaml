@@ -1,0 +1,102 @@
+# Cisco Secure Firewall ASA connection build/teardown -> OCSF Network Activity
+# Templates: verification/vendor_refs/cisco-asa-302013-302016.json (Cisco ASA
+# syslog guide, messages 302003-342008). 106023 (ACL deny) is NOT supported:
+# its template is defective in the current official page (UNVERIFIED).
+id: cisco.asa.connection
+version: 1.0.0
+status: approved
+vendor: Cisco
+product: Secure Firewall ASA
+description: ASA messages 302013/302014 (TCP) and 302015/302016 (UDP).
+references:
+  - https://www.cisco.com/c/en/us/td/docs/security/asa/syslog/asa-syslog/syslog-messages-302003-to-342008.html
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: [host, security_control]
+match:
+  all:
+    - {field: after_pri, regex: '%ASA-[0-7]-30201[3-6]: '}
+parse:
+  kind: regex
+  input: after_pri
+  # optional "MMM dd [yyyy] HH:MM:SS" timestamp and device id before %ASA-n-id
+  extract: '^(?:(?P<asa_ts>[A-Z][a-z]{2} [ 0-9]?[0-9](?: [0-9]{4})? [0-9]{2}:[0-9]{2}:[0-9]{2}):? )?(?:(?P<asa_host>[^ %]+) :? ?)?%ASA-(?P<asa_level>[0-7])-(?P<message_id>30201[3-6]): (?P<payload>.*)$'
+  regex:
+    pattern: '^(?P<event>Built|Teardown) (?:(?P<direction>inbound|outbound) )?(?:Probe ?)?(?P<transport>TCP|UDP) connection (?P<conn_id>[0-9]+) for (?P<a_if>[^:]+):(?P<a_ip>[0-9A-Fa-f.:]+)/(?P<a_port>[0-9]+)(?: \((?P<a_mapped_ip>[0-9A-Fa-f.:]+)/(?P<a_mapped_port>[0-9]+)\))?(?: \((?P<a_user>[^)]*)\))? to (?P<b_if>[^:]+):(?P<b_ip>[0-9A-Fa-f.:]+)/(?P<b_port>[0-9]+)(?: \((?P<b_mapped_ip>[0-9A-Fa-f.:]+)/(?P<b_mapped_port>[0-9]+)\))?(?: \((?P<b_user>[^)]*)\))?(?: duration (?P<duration>[0-9]+:[0-9]{2}:[0-9]{2}) bytes (?P<bytes>[0-9]+))?(?: (?P<trailer>.+))?$'
+time:
+  - {field: asa_ts, format: "%b %d %Y %H:%M:%S", timezone: UTC}
+  - {field: asa_ts, format: "%b %d %H:%M:%S", timezone: UTC, year: infer}
+fields:
+  a_ip:    {to: src_endpoint.ip, type: ip}
+  a_port:  {to: src_endpoint.port, type: port}
+  a_if:    {to: src_endpoint.interface_name, type: string}
+  b_ip:    {to: dst_endpoint.ip, type: ip}
+  b_port:  {to: dst_endpoint.port, type: port}
+  b_if:    {to: dst_endpoint.interface_name, type: string}
+  conn_id: {to: connection_info.uid, type: string}
+  transport: {to: connection_info.protocol_name, type: string, transform: lower}
+  bytes:   {to: traffic.bytes, type: long}            # "The data transfer of the connection"
+  message_id: {to: metadata.event_code, type: string}
+  asa_host: {to: device.hostname, type: string}
+  a_mapped_ip:   {unmapped: true, note: "mapped (NAT) socket; OCSF 1.9.0 has no NAT attributes"}
+  a_mapped_port: {unmapped: true, note: "mapped (NAT) socket"}
+  b_mapped_ip:   {unmapped: true, note: "mapped (NAT) socket"}
+  b_mapped_port: {unmapped: true, note: "mapped (NAT) socket"}
+  duration: {unmapped: true, note: "OCSF 1.9.0 duration is aggregate-only (count > 1)"}
+  trailer:  {unmapped: true, note: "teardown reason / internal fields; kept verbatim"}
+enums:
+  - source: event
+    map: {built: {activity_id: 1}, teardown: {activity_id: 2}}
+    default: {activity_id: 99}
+  # "inbound: initiated from the outside; outbound: initiated from the inside"
+  - source: direction
+    map: {inbound: {connection_info.direction_id: 1}, outbound: {connection_info.direction_id: 2}}
+    default: {connection_info.direction_id: 99}
+  # ASA logging levels 0-7. POLICY: same scale as the syslog severity table.
+  - source: asa_level
+    map: {"0": {severity_id: 6}, "1": {severity_id: 5}, "2": {severity_id: 5}, "3": {severity_id: 4}, "4": {severity_id: 3}, "5": {severity_id: 1}, "6": {severity_id: 1}, "7": {severity_id: 1}}
+    default: {severity_id: 99}
+set:
+  device.type_id: 9
+  # The documentation does not say which socket ("for" or "to") initiated the
+  # connection, so initiator/responder are NOT asserted (OCSF definition).
+  is_src_dst_assignment_known: false
+  # A built/torn-down connection was permitted by the firewall.
+  action_id: 1
+  disposition_id: 1
+derive:
+  - {to: connection_info.protocol_num, using: iana_protocol_num, from: connection_info.protocol_name}
+  - {to: connection_info.community_uid, using: community_id}
+pii:
+  - {field: a_user, action: hmac_sha256}
+  - {field: b_user, action: hmac_sha256}
+tests:
+  - name: tcp_teardown
+    raw: "<166>Oct 07 2026 10:15:30: %ASA-6-302014: Teardown TCP connection 424242 for inside:10.1.1.20/51515 to outside:203.0.113.20/443 duration 0:00:12 bytes 11000 TCP FINs"
+    expect:
+      ulpf.status: parsed
+      activity_id: 2
+      src_endpoint.ip: 10.1.1.20
+      dst_endpoint.port: 443
+      connection_info.protocol_num: 6
+      traffic.bytes: 11000
+      metadata.event_code: "302014"
+      is_src_dst_assignment_known: false
+      time: 1791368130000
+  - name: udp_build_outbound
+    raw: "<166>Oct 07 2026 11:00:00: %ASA-6-302015: Built outbound UDP connection 77 for inside:10.2.3.4/40000 (10.2.3.4/40000) to outside:198.51.100.53/53 (198.51.100.53/53)"
+    expect:
+      ulpf.status: parsed
+      activity_id: 1
+      connection_info.direction_id: 2
+      connection_info.protocol_name: udp
+      unmapped.a_mapped_ip: 10.2.3.4
+  - name: ipv6_teardown
+    raw: "<166>Oct 07 2026 10:15:31: %ASA-6-302016: Teardown UDP connection 99 for inside:2001:db8::10/5353 to outside:2001:db8:ffff::1/53 duration 0:00:01 bytes 120"
+    expect:
+      ulpf.status: parsed
+      src_endpoint.ip: "2001:db8::10"
+      dst_endpoint.ip: "2001:db8:ffff::1"
+      dst_endpoint.port: 53

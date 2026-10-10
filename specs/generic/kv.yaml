@@ -1,0 +1,49 @@
+# Generic key=value catch-all (optionally behind a syslog header) -> Base Event.
+id: ulpf.generic.kv
+version: 1.0.0
+status: approved
+generic: true
+vendor: Generic
+product: Key-Value
+samples: synthetic
+priority: 12
+ocsf:
+  class: base_event
+  profiles: [host, security_control]
+match:
+  all:
+    - {layer: kv}
+parse:
+  kind: kv
+  input: body
+  include_syslog: true
+time:
+  - {field: syslog.timestamp_raw, format: rfc3339}
+  - {field: syslog.timestamp_raw, format: "%b %e %H:%M:%S", timezone: UTC, year: infer}
+fields:
+  syslog.hostname: {to: device.hostname, type: string}
+  syslog.appname:  {to: metadata.log_provider, type: string}
+enums:
+  - source: syslog.severity
+    map:
+      emergency: {severity_id: 6}
+      emerg: {severity_id: 6}
+      alert: {severity_id: 5}
+      critical: {severity_id: 5}
+      crit: {severity_id: 5}
+      error: {severity_id: 4}
+      err: {severity_id: 4}
+      warning: {severity_id: 3}
+      notice: {severity_id: 1}
+      informational: {severity_id: 1}
+      info: {severity_id: 1}
+      debug: {severity_id: 1}
+    default: {severity_id: 99}
+tests:
+  - name: kv_behind_syslog
+    raw: "<134>Oct  7 10:15:30 gw01 appx: user=bob action=login result=ok src=10.0.0.9"
+    expect:
+      ulpf.status: fallback
+      device.hostname: gw01
+      unmapped.user: bob
+      unmapped.src: 10.0.0.9

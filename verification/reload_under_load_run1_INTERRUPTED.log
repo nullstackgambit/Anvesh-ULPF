@@ -1,0 +1,8 @@
+[    0.0s] isolated home: runtime/demo/reload-20261007T141836Z
+[    0.1s] $ ulpf spec compile
+[   69.2s] $ ulpf os bootstrap
+[   72.4s] $ ulpf stack up vector
+    vector: healthy (pid 91530)
+[  135.0s] A. 48000 events at 400/s over TCP (fortigate, panos, zeek, suricata, asa, squid, pfsense) while specs change
+[  145.0s] A1. retire conn.yaml (traffic running: True)
+[  145.1s] $ ulpf spec compile

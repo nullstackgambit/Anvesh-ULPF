@@ -1,0 +1,85 @@
+# Zeek conn.log (JSON writer) -> OCSF Network Activity
+# Fields: Zeek manual "conn.log" and Conn::Info (scripts/base/protocols/conn/main.zeek).
+id: zeek.zeek.conn
+version: 1.0.0
+status: approved
+vendor: Zeek Project
+product: Zeek
+description: Zeek connection summaries (conn.log, JSON).
+references:
+  - https://docs.zeek.org/en/master/logs/conn.html
+  - https://docs.zeek.org/en/master/scripts/base/protocols/conn/main.zeek.html
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: []
+match:
+  all:
+    - {field: json.uid, exists: true}
+    - {field: json.conn_state, exists: true}
+parse:
+  kind: json
+time:
+  - {field: ts, format: epoch_auto}      # epoch seconds with fraction
+fields:
+  id.orig_h:     {to: src_endpoint.ip, type: ip}
+  id.orig_p:     {to: src_endpoint.port, type: port}
+  id.resp_h:     {to: dst_endpoint.ip, type: ip}
+  id.resp_p:     {to: dst_endpoint.port, type: port}
+  proto:         {to: connection_info.protocol_name, type: string, transform: lower}
+  ip_proto:      {to: connection_info.protocol_num, type: int}   # "protocol identifier passed in the IP header"
+  uid:           {to: connection_info.uid, type: string}
+  service:       {to: app_name, type: string}
+  # IP-level byte counts (orig_ip_bytes: "IP level bytes that the originator sent")
+  orig_ip_bytes: {to: traffic.bytes_out, type: long}
+  resp_ip_bytes: {to: traffic.bytes_in, type: long}
+  orig_pkts:     {to: traffic.packets_out, type: long}
+  resp_pkts:     {to: traffic.packets_in, type: long}
+  missed_bytes:  {to: traffic.bytes_missed, type: long}
+  orig_bytes: {unmapped: true, note: "application payload bytes; the IP-level counts are mapped instead"}
+  resp_bytes: {unmapped: true, note: "application payload bytes; the IP-level counts are mapped instead"}
+  duration:   {unmapped: true, note: "OCSF 1.9.0 duration is aggregate-only (count > 1)"}
+enums:
+  # conn_state values as documented in Conn::Info. POLICY: activity choice.
+  - source: conn_state
+    case_insensitive: false
+    map:
+      S0:     {activity_id: 4}   # attempt seen, no reply
+      S1:     {activity_id: 6}   # established, not terminated
+      SF:     {activity_id: 2}   # normal establishment and termination
+      REJ:    {activity_id: 5}   # attempt rejected
+      S2:     {activity_id: 2}   # close attempt by originator seen
+      S3:     {activity_id: 2}   # close attempt by responder seen
+      RSTO:   {activity_id: 3}   # originator aborted (RST)
+      RSTR:   {activity_id: 3}   # responder sent a RST
+      RSTOS0: {activity_id: 3}
+      RSTRH:  {activity_id: 3}
+      SH:     {activity_id: 2}   # SYN then FIN, half open
+      SHR:    {activity_id: 2}
+      OTH:    {activity_id: 99}  # midstream traffic, no SYN seen
+    default: {activity_id: 99}
+set:
+  # orig/resp are Zeek's originator/responder
+  is_src_dst_assignment_known: true
+derive:
+  - {to: connection_info.community_uid, using: community_id}
+tests:
+  - name: tcp_sf
+    raw: "{\"ts\":1791368130.25,\"uid\":\"C000040033f9806d92\",\"id.orig_h\":\"10.1.1.20\",\"id.orig_p\":51515,\"id.resp_h\":\"203.0.113.20\",\"id.resp_p\":443,\"proto\":\"tcp\",\"service\":\"ssl\",\"duration\":12.5,\"orig_bytes\":800,\"resp_bytes\":9320,\"conn_state\":\"SF\",\"missed_bytes\":0,\"history\":\"ShADadFf\",\"orig_pkts\":10,\"orig_ip_bytes\":1200,\"resp_pkts\":12,\"resp_ip_bytes\":9800,\"ip_proto\":6}"
+    expect:
+      ulpf.status: parsed
+      time: 1791368130250
+      activity_id: 2
+      src_endpoint.ip: 10.1.1.20
+      dst_endpoint.port: 443
+      connection_info.protocol_num: 6
+      traffic.bytes_out: 1200
+      traffic.bytes_in: 9800
+      is_src_dst_assignment_known: true
+  - name: udp_rej
+    raw: "{\"ts\":1791370800.0,\"uid\":\"C00000002f96af9a3d\",\"id.orig_h\":\"10.2.3.4\",\"id.orig_p\":40000,\"id.resp_h\":\"198.51.100.53\",\"id.resp_p\":53,\"proto\":\"udp\",\"service\":\"dns\",\"duration\":12.5,\"orig_bytes\":40,\"resp_bytes\":0,\"conn_state\":\"REJ\",\"missed_bytes\":0,\"history\":\"Sr\",\"orig_pkts\":1,\"orig_ip_bytes\":80,\"resp_pkts\":0,\"resp_ip_bytes\":0,\"ip_proto\":17}"
+    expect:
+      ulpf.status: parsed
+      activity_id: 5
+      connection_info.protocol_name: udp

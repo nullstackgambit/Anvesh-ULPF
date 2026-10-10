@@ -1,0 +1,12 @@
+5499 source window(s); 28 flagged by IsolationForest(n_estimators=200, contamination='auto', max_samples=1.0, random_state=0)
+  score 0.944  10.66.6.6       2026-10-07T09:52:00+00:00  events 500.0 (median 1.0); distinct_dst_ports 500.0 (median 1.0); denied_events 500.0 (median 0.0)
+  score 0.855  10.1.51.36      2026-10-07T09:50:00+00:00  denied_events 2.0 (median 0.0)
+  score 0.820  10.0.17.119     2026-10-07T09:50:00+00:00  
+  score 0.807  10.3.153.145    2026-10-07T09:50:00+00:00  
+  score 0.807  10.1.211.89     2026-10-07T09:52:00+00:00  
+  score 0.720  10.0.182.83     2026-10-07T09:50:00+00:00  
+  score 0.720  10.0.255.105    2026-10-07T09:50:00+00:00  
+  score 0.720  10.1.182.196    2026-10-07T09:50:00+00:00  
+  score 0.720  10.1.2.185      2026-10-07T09:50:00+00:00  
+  score 0.720  10.3.119.47     2026-10-07T09:50:00+00:00  
+evaluation: {'scanner': '10.66.6.6', 'windows': 5499, 'flagged': 28, 'scanner_windows_flagged': 1, 'other_windows_flagged': 27, 'scanner_rank': 1}

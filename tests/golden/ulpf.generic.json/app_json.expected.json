@@ -1,0 +1,116 @@
+{
+  "activity_id": 0,
+  "activity_name": "Unknown",
+  "category_name": "Uncategorized",
+  "category_uid": 0,
+  "class_name": "Base Event",
+  "class_uid": 0,
+  "message": "disk almost full",
+  "metadata": {
+    "log_format": "json",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "e94e9ca2-b568-57f0-91d6-7258532f7ba6",
+        "log_format": "json",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "2026-10-07T10:15:30.250Z",
+    "product": {
+      "name": "JSON",
+      "vendor_name": "Generic"
+    },
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "ulpf.generic.json",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "44f953e12cfa9609ed40810b5f5da36bcc5495b8fed8b3c1eaf4db90913893fd"
+      }
+    ],
+    "uid": "e94e9ca2-b568-57f0-91d6-7258532f7ba6",
+    "version": "1.9.0"
+  },
+  "raw_data": "{\"timestamp\":\"2026-10-07T10:15:30.250Z\",\"level\":\"warn\",\"message\":\"disk almost full\",\"host\":\"app-01\",\"disk\":{\"pct\":91}}",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "0e33b98473e082d3f74af53607e78c40f42f45b022e6d5f6c96e44cc106b3ad3"
+  },
+  "raw_data_size": 118,
+  "severity": "Unknown",
+  "severity_id": 0,
+  "time": 1791368130250,
+  "type_name": "Base Event: Unknown",
+  "type_uid": 0,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 5,
+      "mapped": 2,
+      "unmapped": 3
+    },
+    "event_uid": "e94e9ca2-b568-57f0-91d6-7258532f7ba6",
+    "fingerprint": "844b3d989a319963",
+    "format": "json",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "activity_id": "default:unknown",
+      "message": "message",
+      "severity_id": "default:unknown",
+      "time": "timestamp"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "ulpf.generic.json",
+      "spec_sha256": "44f953e12cfa9609ed40810b5f5da36bcc5495b8fed8b3c1eaf4db90913893fd",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 118,
+      "sha256": "0e33b98473e082d3f74af53607e78c40f42f45b022e6d5f6c96e44cc106b3ad3",
+      "utf8": true
+    },
+    "reasons": [
+      "generic_parser"
+    ],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "fallback",
+    "time": {
+      "assumed_timezone": null,
+      "field": "timestamp",
+      "format": "rfc3339",
+      "skew_ms": 6269750,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "disk.pct": 91,
+    "host": "app-01",
+    "level": "warn"
+  }
+}

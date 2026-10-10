@@ -1,0 +1,36 @@
+{
+  "archive_records": 1846,
+  "catch_up": {
+    "records": 1588,
+    "seconds": 18.0,
+    "vector_problems": []
+  },
+  "distinct_event_uids": 1846,
+  "final_count": 3903,
+  "missing_after_catch_up": [],
+  "new_count": 1846,
+  "new_index": "ulpf-events-v2",
+  "new_status": {
+    "fallback": 274,
+    "parsed": 1572
+  },
+  "old_read": [
+    "ulpf-events-v1"
+  ],
+  "old_status": {
+    "fallback": 274,
+    "parsed": 2401
+  },
+  "old_write": [
+    "ulpf-events-v1"
+  ],
+  "replay": {
+    "records": 1846,
+    "seconds": 17.64,
+    "vector_problems": []
+  },
+  "run": "replay-20261007T095023Z",
+  "switched": true,
+  "switched_at": "2026-10-07T09:50:41.791+00:00",
+  "verified": true
+}

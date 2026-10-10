@@ -1,0 +1,123 @@
+stopping the repository stack (restarted afterwards)
+vector: stopped
+opensearch: stopped
+ui: stopped
+
+[0s] == network check inside the sandbox
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+connect 1.1.1.1:443 -> 101 (101 = network unreachable)
+DNS pypi.org -> gaierror
+
+[0s] == install from bundle (signature + hashes, offline venv, runtime, secrets, certs, security)
+== 1/6 verify bundle
+BUNDLE.json sha256: 8a0f5fd326165714a0567cf6238c18db920203d18a0b6d9c039995f4509ced80
+release.pub sha256: 811f0986fb4f4dd515b0d33e6d8221559002b858099520ca01bf05da033c7eea
+bundle OK: 242 files, 533964391 bytes, ulpf 0.1.0, built 2026-10-07T11:17:07+00:00
+Signature Verified Successfully
+== 2/6 copy source tree to <repo>/runtime/airgap-test/ulpf
+== 3/6 Python environment (offline, hash-pinned wheels)
+== 4/6 runtime (Vector, OpenSearch, security plugin) from pinned artifacts
+vector installed
+opensearch installed
+opensearch-security plugin installed
+== 5/6 secrets, keys, certificates (generated here, never shipped)
+{
+  "key_id": "456dbe9ed0bc619a",
+  "private_key": "<repo>/runtime/airgap-test/ulpf/deploy/keys/seal.key",
+  "public_key": "<repo>/runtime/airgap-test/ulpf/deploy/keys/seal.pub"
+}
+{
+  "dir": "<repo>/runtime/airgap-test/ulpf/runtime/secrets",
+  "written": {
+    "opensearch-admin": "created",
+    "opensearch-ulpf-reader": "created",
+    "opensearch-ulpf-writer": "created",
+    "pii.key": "created"
+  }
+}
+{
+  "ca_sha256": "d8d852e646e99e402f7d83955ab8b0571194b14b7e5995b626b52fa11a9e9e4e",
+  "created": true,
+  "dir": "<repo>/runtime/airgap-test/ulpf/deploy/certs",
+  "not_after": "2029-01-09T11:19:05+00:00",
+  "note": "move deploy/certs/ulpf-ca.key offline once certificates are issued",
+  "subjects": {
+    "opensearch-admin": "CN=ulpf-admin,OU=ULPF deployment,O=ULPF",
+    "opensearch-node": "CN=ulpf-opensearch-node,OU=ULPF deployment,O=ULPF",
+    "ulpf-client": "CN=ulpf-sender,OU=ULPF deployment,O=ULPF",
+    "ulpf-server": "CN=ulpf-syslog,OU=ULPF deployment,O=ULPF"
+  }
+}
+{
+  "config_dir": "<repo>/runtime/airgap-test/ulpf/runtime/opensearch-config/opensearch-security",
+  "local_override": "<repo>/runtime/airgap-test/ulpf/runtime/ulpf.local.yaml",
+  "next": "ulpf stack down opensearch && ulpf stack up opensearch",
+  "plugin": [
+    "already installed"
+  ],
+  "users": [
+    "admin",
+    "ulpf-reader",
+    "ulpf-writer"
+  ]
+}
+== 6/6 checks
+[OK  ] python: 3.12.3
+[OK  ] package PyYAML: 6.0.3 (pinned 6.0.3)
+[OK  ] package jsonschema: 4.26.0 (pinned 4.26.0)
+[OK  ] package cryptography: 50.0.2 (pinned 50.0.2)
+[OK  ] package click: 8.5.0 (pinned 8.5.0)
+[OK  ] package drain3: 0.9.11 (pinned 0.9.11)
+[OK  ] package pyarrow: 25.0.1 (pinned 25.0.1)
+[OK  ] package scikit-learn: 1.9.1 (pinned 1.9.1)
+[OK  ] package streamlit: 1.65.0 (pinned 1.65.0)
+[OK  ] package pySigma: 1.5.1 (pinned 1.5.1)
+[OK  ] package pySigma-backend-opensearch: 2.0.3 (pinned 2.0.3)
+[OK  ] vector: vector 0.58.0 (x86_64-unknown-linux-musl 2bcad9b 2026-08-26 13:37:07.557544670)
+[OK  ] opensearch: 3.8.0 at <repo>/runtime/airgap-test/ulpf/runtime/opensearch
+[OK  ] runtime binaries: sha256 match runtime/MANIFEST.json
+[OK  ] ocsf schema: OCSF 1.9.0, 22 vendored files
+[OK  ] iana protocol numbers: sha256 matches SOURCE.json
+[OK  ] specs: 13 approved spec(s), 0 lint error(s)
+[OK  ] generated config: ok
+[OK  ] seal key: <repo>/runtime/airgap-test/ulpf/deploy/keys/seal.key
+[OK  ] disk free: 1.1 GB
+[OK  ] listen syslog_udp: 127.0.0.1:5514
+[OK  ] listen syslog_tcp: 127.0.0.1:5514
+[OK  ] listen http_ndjson: 127.0.0.1:8088
+
+installed in <repo>/runtime/airgap-test/ulpf. Start:  <repo>/runtime/airgap-test/ulpf/.venv/bin/ulpf stack up
+
+[223s] == golden/schema/completeness/round-trip tests through Vector
+[PASS] zeek.zeek.conn :: tcp_sf
+[PASS] zeek.zeek.conn :: udp_rej
+31/31 test vectors passed
+
+[265s] == start secured OpenSearch + Vector
+opensearch: healthy (pid 78915)
+opensearch bootstrap: {'template': 'installed', 'write_index': ['ulpf-events-v1']}
+vector: healthy (pid 79356)
+
+[458s] == live traffic (SYNTHETIC TEST DATA) and accounting
+sent 300 event(s) via tcp to 127.0.0.1:5514
+settled_after_s              6.1
+archived                     300
+normalized                   300
+status                       {'parsed': 300}
+archive_uid_duplicates       0
+archived_not_normalized      0
+normalized_not_archived      0
+recorded_losses              {}
+sent                         300
+sent_not_archived            0
+vector_received_by_source    {'in_syslog_tcp': 300.0}
+indexed                      83
+archived_not_indexed         217
+indexed_not_archived         0
+verdict                      FAIL
+restarting the repository stack
+opensearch: healthy (pid 79502)
+opensearch bootstrap: {'template': 'updated', 'write_index': ['ulpf-events-v2']}
+vector: healthy (pid 79942)
+ui: healthy (pid 80094)
+airgap_test.sh exit code: 1

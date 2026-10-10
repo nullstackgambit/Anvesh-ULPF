@@ -1,0 +1,29 @@
+{
+  "_comment": "SHA-256 pins. Each file was first verified against the publisher's checksum (Vector SHA256SUMS; OpenSearch .sha512 + PGP; Maven Central .sha512) on 2026-10-07.",
+  "artifacts": [
+    {
+      "name": "Vector 0.58.0 (static musl)",
+      "file": "vector-0.58.0-x86_64-unknown-linux-musl.tar.gz",
+      "url": "https://github.com/vectordotdev/vector/releases/download/v0.58.0/vector-0.58.0-x86_64-unknown-linux-musl.tar.gz",
+      "kind": "vector",
+      "required": true,
+      "sha256": "ad013ddc164b80e425cc403d2174e26b811673846d1125c80bc7b5024826ce39"
+    },
+    {
+      "name": "OpenSearch 3.8.0 (min)",
+      "file": "opensearch-min-3.8.0-linux-x64.tar.gz",
+      "url": "https://artifacts.opensearch.org/releases/core/opensearch/3.8.0/opensearch-min-3.8.0-linux-x64.tar.gz",
+      "kind": "opensearch",
+      "required": true,
+      "sha256": "fc4725c78a6c71c93160ea2d6b53ee5277ca86c946cc1e786162684e65161206"
+    },
+    {
+      "name": "opensearch-security 3.8.0.0",
+      "file": "opensearch-security-3.8.0.0.zip",
+      "url": "https://repo1.maven.org/maven2/org/opensearch/plugin/opensearch-security/3.8.0.0/opensearch-security-3.8.0.0.zip",
+      "kind": "os-plugin",
+      "required": true,
+      "sha256": "7f6bcac4fd23d5a69a182d9ce5f14ce6364f0d342571fa83090f9debabe8cc4e"
+    }
+  ]
+}

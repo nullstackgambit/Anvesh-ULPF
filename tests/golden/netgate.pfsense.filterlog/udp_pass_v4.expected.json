@@ -1,0 +1,173 @@
+{
+  "action": "Allowed",
+  "action_id": 1,
+  "activity_id": 6,
+  "activity_name": "Traffic",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "udp",
+    "protocol_num": 17
+  },
+  "device": {
+    "interface_name": "em0",
+    "type": "Firewall",
+    "type_id": 9
+  },
+  "disposition": "Allowed",
+  "disposition_id": 1,
+  "dst_endpoint": {
+    "ip": "198.51.100.53",
+    "port": 53
+  },
+  "firewall_rule": {
+    "uid": "1000000103"
+  },
+  "metadata": {
+    "log_format": "syslog+csv",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "152aaa42-7a78-58b1-8dce-6b4065566226",
+        "log_format": "syslog+csv",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "Oct  7 11:00:00",
+    "product": {
+      "name": "pfSense",
+      "vendor_name": "Netgate"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "netgate.pfsense.filterlog",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "9157f2857253f5a94c53078d12dced868a1b4a811e550682dc7c12d60f9acf91"
+      }
+    ],
+    "uid": "152aaa42-7a78-58b1-8dce-6b4065566226",
+    "version": "1.9.0"
+  },
+  "raw_data": "<134>Oct  7 11:00:00 filterlog[30077]: 5,,,1000000103,em0,match,pass,in,4,0x0,,64,77,0,DF,17,udp,140,10.2.3.4,198.51.100.53,40000,53,80",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "892a609075b8f76937a222c1e1bea2840b7ab39bfa545f264920b6b779ebd4a9"
+  },
+  "raw_data_size": 135,
+  "severity": "Informational",
+  "severity_id": 1,
+  "src_endpoint": {
+    "ip": "10.2.3.4",
+    "port": 40000
+  },
+  "time": 1791370800000,
+  "traffic": {
+    "bytes": 140
+  },
+  "type_name": "Network Activity: Traffic",
+  "type_uid": 400106,
+  "ulpf": {
+    "coverage": {
+      "empty": 3,
+      "empty_fields": [
+        "anchor",
+        "ecn",
+        "sub_rule_number"
+      ],
+      "fields": 28,
+      "mapped": 12,
+      "unmapped": 13
+    },
+    "event_uid": "152aaa42-7a78-58b1-8dce-6b4065566226",
+    "fingerprint": "025a647d37732044",
+    "format": "syslog+csv",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:action",
+      "activity_id": "enum:action",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "protocol_text",
+      "connection_info.protocol_num": "protocol_id",
+      "device.interface_name": "real_interface",
+      "device.type_id": "const",
+      "disposition_id": "enum:action",
+      "dst_endpoint.ip": "destination_ip",
+      "dst_endpoint.port": "destination_port",
+      "firewall_rule.uid": "tracker",
+      "severity_id": "enum:syslog.severity",
+      "src_endpoint.ip": "source_ip",
+      "src_endpoint.port": "source_port",
+      "time": "syslog.timestamp_raw",
+      "traffic.bytes": "length"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "netgate.pfsense.filterlog",
+      "spec_sha256": "9157f2857253f5a94c53078d12dced868a1b4a811e550682dc7c12d60f9acf91",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 135,
+      "sha256": "892a609075b8f76937a222c1e1bea2840b7ab39bfa545f264920b6b779ebd4a9",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": "UTC",
+      "field": "syslog.timestamp_raw",
+      "format": "%b %e %H:%M:%S",
+      "skew_ms": 3600000,
+      "source": "field",
+      "year_inferred": true
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "data_length": "80",
+    "direction": "in",
+    "flags": "DF",
+    "id": "77",
+    "ip_version": "4",
+    "offset": "0",
+    "reason": "match",
+    "rule_number": "5",
+    "syslog.appname": "filterlog",
+    "syslog.facility": "local0",
+    "syslog.procid": 30077,
+    "tos": "0x0",
+    "ttl": "64"
+  }
+}

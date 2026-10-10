@@ -1,0 +1,282 @@
+{
+  "combinations": [
+    {
+      "class": "base_event",
+      "file": "jsonschema/base_event__none.json",
+      "profiles": []
+    },
+    {
+      "class": "base_event",
+      "file": "jsonschema/base_event__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "base_event",
+      "file": "jsonschema/base_event__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "network_activity",
+      "file": "jsonschema/network_activity__none.json",
+      "profiles": []
+    },
+    {
+      "class": "network_activity",
+      "file": "jsonschema/network_activity__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "network_activity",
+      "file": "jsonschema/network_activity__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "http_activity",
+      "file": "jsonschema/http_activity__none.json",
+      "profiles": []
+    },
+    {
+      "class": "http_activity",
+      "file": "jsonschema/http_activity__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "http_activity",
+      "file": "jsonschema/http_activity__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "dns_activity",
+      "file": "jsonschema/dns_activity__none.json",
+      "profiles": []
+    },
+    {
+      "class": "dns_activity",
+      "file": "jsonschema/dns_activity__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "dns_activity",
+      "file": "jsonschema/dns_activity__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "detection_finding",
+      "file": "jsonschema/detection_finding__none.json",
+      "profiles": []
+    },
+    {
+      "class": "detection_finding",
+      "file": "jsonschema/detection_finding__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "detection_finding",
+      "file": "jsonschema/detection_finding__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "authentication",
+      "file": "jsonschema/authentication__none.json",
+      "profiles": []
+    },
+    {
+      "class": "authentication",
+      "file": "jsonschema/authentication__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "authentication",
+      "file": "jsonschema/authentication__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    },
+    {
+      "class": "ssh_activity",
+      "file": "jsonschema/ssh_activity__none.json",
+      "profiles": []
+    },
+    {
+      "class": "ssh_activity",
+      "file": "jsonschema/ssh_activity__security_control.json",
+      "profiles": [
+        "security_control"
+      ]
+    },
+    {
+      "class": "ssh_activity",
+      "file": "jsonschema/ssh_activity__host+security_control.json",
+      "profiles": [
+        "host",
+        "security_control"
+      ]
+    }
+  ],
+  "files": {
+    "export_v2_schema.json": {
+      "bytes": "4374385",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "cf67a1dfa6acd76ed7ecd222da7979f54fa63a166090f63610d63c8e4817ad73",
+      "url": "https://schema.ocsf.io/1.9.0/export/v2/schema"
+    },
+    "jsonschema/authentication__host+security_control.json": {
+      "bytes": "100027",
+      "fetched_at": "2026-10-07T02:44:10+00:00",
+      "sha256": "37b7959af1dc28082c9a332e8124bc6de07373622c13387a8447ca7b3ad261c5",
+      "url": "https://schema.ocsf.io/schema/classes/authentication?profiles=host,security_control"
+    },
+    "jsonschema/authentication__none.json": {
+      "bytes": "98665",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "122cf5fb7d9f2236731e0390848d184551e0ba87c81f15fa3c9e72c0c1125fa3",
+      "url": "https://schema.ocsf.io/schema/classes/authentication?profiles="
+    },
+    "jsonschema/authentication__security_control.json": {
+      "bytes": "99975",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "7db0e9cfb45e1b9e0c00b8bc5788b0a27918695e611d9cb2d58dca4966d26b22",
+      "url": "https://schema.ocsf.io/schema/classes/authentication?profiles=security_control"
+    },
+    "jsonschema/base_event__host+security_control.json": {
+      "bytes": "94702",
+      "fetched_at": "2026-10-07T02:38:58+00:00",
+      "sha256": "f87febe05b2814309ec5dfc40a3d99ebf8cb190ab933d87f9d4bc77841aa6c9d",
+      "url": "https://schema.ocsf.io/schema/classes/base_event?profiles=host,security_control"
+    },
+    "jsonschema/base_event__none.json": {
+      "bytes": "93291",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "c7bbd4801a1ccb34881b996342846636e141a6028d6837e92f87f96363aff5c8",
+      "url": "https://schema.ocsf.io/schema/classes/base_event?profiles="
+    },
+    "jsonschema/base_event__security_control.json": {
+      "bytes": "94601",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "29c4d70869d379c16911967cae75fc12dc77baa900ca24c6b01f73d8db562155",
+      "url": "https://schema.ocsf.io/schema/classes/base_event?profiles=security_control"
+    },
+    "jsonschema/detection_finding__host+security_control.json": {
+      "bytes": "115815",
+      "fetched_at": "2026-10-07T02:43:08+00:00",
+      "sha256": "f1890b0acfccf4b70ab7cd8b2f0bdc16a941e718595aa8890295e7453f46b588",
+      "url": "https://schema.ocsf.io/schema/classes/detection_finding?profiles=host,security_control"
+    },
+    "jsonschema/detection_finding__none.json": {
+      "bytes": "115105",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "b680763405d2e472cb3c3c52bd6ca9f5555f048445e8f6092c5cfdd53ae63161",
+      "url": "https://schema.ocsf.io/schema/classes/detection_finding?profiles="
+    },
+    "jsonschema/detection_finding__security_control.json": {
+      "bytes": "115766",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "0b8319167344174685a7439a98f0d903a8b49e4a26e5befc00fc12ee1891f356",
+      "url": "https://schema.ocsf.io/schema/classes/detection_finding?profiles=security_control"
+    },
+    "jsonschema/dns_activity__host+security_control.json": {
+      "bytes": "107082",
+      "fetched_at": "2026-10-07T02:42:06+00:00",
+      "sha256": "d9822297800b848d30a551650fb0ba41760b178909d798bd31b23ac3a2fa1365",
+      "url": "https://schema.ocsf.io/schema/classes/dns_activity?profiles=host,security_control"
+    },
+    "jsonschema/dns_activity__none.json": {
+      "bytes": "105671",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "f7b8f47e554df23c10857a84712db834b1d4dd5ff656d07e00c5da3cf17a43b1",
+      "url": "https://schema.ocsf.io/schema/classes/dns_activity?profiles="
+    },
+    "jsonschema/dns_activity__security_control.json": {
+      "bytes": "106981",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "334c4df0179721392eb55276c0467de83bf5fc35af0a3763599ae63c2d1ae21e",
+      "url": "https://schema.ocsf.io/schema/classes/dns_activity?profiles=security_control"
+    },
+    "jsonschema/http_activity__host+security_control.json": {
+      "bytes": "106599",
+      "fetched_at": "2026-10-07T02:41:03+00:00",
+      "sha256": "b959124dec6f6b11e220eb45de2145d312f700054d17cdf1eb91681895d5f2a5",
+      "url": "https://schema.ocsf.io/schema/classes/http_activity?profiles=host,security_control"
+    },
+    "jsonschema/http_activity__none.json": {
+      "bytes": "105188",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "4d8171c0d65024d8a54041074dcad76cae1430aabbe466e7778e90d71040713d",
+      "url": "https://schema.ocsf.io/schema/classes/http_activity?profiles="
+    },
+    "jsonschema/http_activity__security_control.json": {
+      "bytes": "106498",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "38a62945a67d58af4cd4ced362fd4bab7ba898e5717689b5eefdf5cd2e32141c",
+      "url": "https://schema.ocsf.io/schema/classes/http_activity?profiles=security_control"
+    },
+    "jsonschema/network_activity__host+security_control.json": {
+      "bytes": "104752",
+      "fetched_at": "2026-10-07T02:40:01+00:00",
+      "sha256": "3c08376114e3abe15f8fb2f4b6e1651049b827c0f4f57380d8db7ba84ece6c86",
+      "url": "https://schema.ocsf.io/schema/classes/network_activity?profiles=host,security_control"
+    },
+    "jsonschema/network_activity__none.json": {
+      "bytes": "103341",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "e5a06cf2973eb9408e1669185af41898befeceffe820f8830631ce30967b00c4",
+      "url": "https://schema.ocsf.io/schema/classes/network_activity?profiles="
+    },
+    "jsonschema/network_activity__security_control.json": {
+      "bytes": "104651",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "434b57d9873b50c679d039469d24885b93b189154954ad9ac08df77d8ecd16ff",
+      "url": "https://schema.ocsf.io/schema/classes/network_activity?profiles=security_control"
+    },
+    "jsonschema/ssh_activity__host+security_control.json": {
+      "bytes": "105091",
+      "fetched_at": "2026-10-07T02:45:13+00:00",
+      "sha256": "738b6e58276cefecbe8134c6042ee5739ff6bf252a2685938739d707bdcdbdce",
+      "url": "https://schema.ocsf.io/schema/classes/ssh_activity?profiles=host,security_control"
+    },
+    "jsonschema/ssh_activity__none.json": {
+      "bytes": "103680",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "763654bad1edce6df25b9419a8f4c71c5509691a41c4a3f77c2003a863c314c1",
+      "url": "https://schema.ocsf.io/schema/classes/ssh_activity?profiles="
+    },
+    "jsonschema/ssh_activity__security_control.json": {
+      "bytes": "104990",
+      "fetched_at": "2026-10-07T02:31:34+00:00",
+      "sha256": "12da3bd782f3aa6fa4e6d58aaf7ed3c26f2d299afb936b394122d3db930a558c",
+      "url": "https://schema.ocsf.io/schema/classes/ssh_activity?profiles=security_control"
+    }
+  },
+  "manifest_written_at": "2026-10-07T02:45:13+00:00",
+  "ocsf_version": "1.9.0",
+  "server": "https://schema.ocsf.io",
+  "server_default_version_at_fetch": "1.9.0"
+}

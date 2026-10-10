@@ -1,0 +1,112 @@
+# pfSense filterlog -> OCSF Network Activity
+# Field order: Netgate "Raw Filter Log Format" (plain-text layout + BNF).
+id: netgate.pfsense.filterlog
+version: 1.0.0
+status: approved
+vendor: Netgate
+product: pfSense
+description: pfSense firewall filter log (CSV over syslog), IPv4/IPv6, TCP/UDP; other protocols keep their columns as _extra_N.
+references:
+  - https://docs.netgate.com/pfsense/en/latest/monitoring/logs/raw-filter-format.html
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: [host, security_control]
+match:
+  all:
+    - {field: syslog.appname, equals: filterlog}
+parse:
+  kind: csv
+  input: body
+  include_syslog: true
+  csv:
+    segments:
+      - columns: [rule_number, sub_rule_number, anchor, tracker, real_interface, reason, action, direction, ip_version]
+      - when: {column: ip_version, equals: "4"}
+        columns: [tos, ecn, ttl, id, offset, flags, protocol_id, protocol_text]
+      - when: {column: ip_version, equals: "6"}
+        columns: [class, flow_label, hop_limit, protocol_text, protocol_id]
+      - columns: [length, source_ip, destination_ip]
+      - when: {column: protocol_id, in: ["6", "17"]}
+        columns: [source_port, destination_port, data_length]
+      - when: {column: protocol_id, equals: "6"}
+        columns: [tcp_flags, sequence_number, ack_number, tcp_window, urg, tcp_options]
+time:
+  - {field: syslog.timestamp_raw, format: rfc3339}
+  # ASSUMPTION: BSD-format senders log in UTC (recorded in ulpf.time.assumed_timezone)
+  - {field: syslog.timestamp_raw, format: "%b %e %H:%M:%S", timezone: UTC, year: infer}
+fields:
+  source_ip:        {to: src_endpoint.ip, type: ip}
+  destination_ip:   {to: dst_endpoint.ip, type: ip}
+  source_port:      {to: src_endpoint.port, type: port}
+  destination_port: {to: dst_endpoint.port, type: port}
+  protocol_id:      {to: connection_info.protocol_num, type: int}
+  protocol_text:    {to: connection_info.protocol_name, type: string, transform: lower}
+  real_interface:   {to: device.interface_name, type: string}
+  tracker:          {to: firewall_rule.uid, type: string}   # "unique Rule Tracking ID per rule"
+  length:           {to: traffic.bytes, type: long}         # packet length in bytes
+  syslog.hostname:  {to: device.hostname, type: string}
+  direction: {unmapped: true, note: "in/out is relative to the interface; OCSF direction_id is relative to the network perimeter (not equivalent)"}
+  tcp_flags: {unmapped: true, note: "letters (S, SA, ...); OCSF connection_info.tcp_flags is an integer bitmask"}
+enums:
+  - source: action
+    map:
+      pass:  {activity_id: 6, action_id: 1, disposition_id: 1}
+      block: {activity_id: 5, action_id: 2, disposition_id: 2}
+    default: {activity_id: 99, action_id: 99, disposition_id: 99}
+  - source: syslog.severity
+    map:
+      emergency: {severity_id: 6}
+      emerg: {severity_id: 6}
+      alert: {severity_id: 5}
+      critical: {severity_id: 5}
+      crit: {severity_id: 5}
+      error: {severity_id: 4}
+      err: {severity_id: 4}
+      warning: {severity_id: 3}
+      notice: {severity_id: 1}
+      informational: {severity_id: 1}
+      info: {severity_id: 1}
+      debug: {severity_id: 1}
+    default: {severity_id: 99}
+set:
+  device.type_id: 9
+tests:
+  - name: tcp_block_v4
+    raw: "<134>Oct  7 10:15:30 filterlog[34284]: 5,,,1000000103,em0,match,block,in,4,0x0,,64,31032,0,DF,6,tcp,1260,10.1.1.20,203.0.113.20,51515,443,0,S,425242,,64240,,mss;sackOK;TS;nop;wscale"
+    expect:
+      ulpf.status: parsed
+      activity_id: 5
+      action_id: 2
+      src_endpoint.ip: 10.1.1.20
+      src_endpoint.port: 51515
+      dst_endpoint.ip: 203.0.113.20
+      dst_endpoint.port: 443
+      connection_info.protocol_num: 6
+      connection_info.protocol_name: tcp
+      firewall_rule.uid: "1000000103"
+      time: 1791368130000
+  - name: udp_pass_v4
+    raw: "<134>Oct  7 11:00:00 filterlog[30077]: 5,,,1000000103,em0,match,pass,in,4,0x0,,64,77,0,DF,17,udp,140,10.2.3.4,198.51.100.53,40000,53,80"
+    expect:
+      ulpf.status: parsed
+      activity_id: 6
+      action_id: 1
+      connection_info.protocol_name: udp
+      dst_endpoint.port: 53
+  - name: ipv6_tcp_rfc5424
+    raw: "<134>1 2026-10-07T10:15:32.000+00:00 fw.example.net filterlog 5432 - - 5,,,1000000104,em1,match,block,in,6,0x00,0x00000,64,tcp,6,80,2001:db8::5,2001:db8::1,51515,22,0,S,123,,64800,,mss"
+    expect:
+      ulpf.status: parsed
+      src_endpoint.ip: "2001:db8::5"
+      dst_endpoint.port: 22
+      connection_info.protocol_num: 6
+      device.hostname: fw.example.net
+      time: 1791368132000
+  - name: icmp_extra_columns_kept
+    raw: "<134>Oct  7 10:15:33 filterlog[1]: 7,,,1000000105,em0,match,block,in,4,0x0,,64,1,0,none,1,icmp,84,10.9.9.9,10.1.1.1,request,77,1"
+    expect:
+      ulpf.status: parsed
+      connection_info.protocol_name: icmp
+      unmapped._extra_20: request

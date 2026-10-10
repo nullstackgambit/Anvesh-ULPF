@@ -1,0 +1,18 @@
+{
+  "archive_from_index": {
+    "indexed_not_archived": 1311,
+    "recoverable": 1311,
+    "rejected": [],
+    "written": "runtime/data/archive/raw/2026-10-07/raw-20261007T1058-ulpf-collector-01-recovered-105815.ndjson"
+  },
+  "index_from_archive": {
+    "indexed_before": 25035,
+    "missing": 0,
+    "run": "missing-20261007T105929Z"
+  },
+  "normalized_from_archive": {
+    "archived_not_normalized": 1311,
+    "events": 1311,
+    "written": "runtime/data/normalized/2026-10-07/events-20261007T1058-ulpf-collector-01-recovered-105818.ndjson"
+  }
+}

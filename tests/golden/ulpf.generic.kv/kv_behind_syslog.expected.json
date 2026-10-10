@@ -1,0 +1,129 @@
+{
+  "activity_id": 0,
+  "activity_name": "Unknown",
+  "category_name": "Uncategorized",
+  "category_uid": 0,
+  "class_name": "Base Event",
+  "class_uid": 0,
+  "device": {
+    "hostname": "gw01",
+    "type": "Unknown",
+    "type_id": 0
+  },
+  "metadata": {
+    "log_format": "syslog+kv",
+    "log_provider": "appx",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "9340d9e7-3061-5fff-8d2e-252050e75991",
+        "log_format": "syslog+kv",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "Oct  7 10:15:30",
+    "product": {
+      "name": "Key-Value",
+      "vendor_name": "Generic"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "ulpf.generic.kv",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "f850ab917cf46fdb92f101b339f96ed6814fdb936a2da8c432c84dd5aa478b90"
+      }
+    ],
+    "uid": "9340d9e7-3061-5fff-8d2e-252050e75991",
+    "version": "1.9.0"
+  },
+  "raw_data": "<134>Oct  7 10:15:30 gw01 appx: user=bob action=login result=ok src=10.0.0.9",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "aedafe0e4ab2cd6d021c2263c0beaf80f8a50df9ac2f090a7cdc4ec6afe937c0"
+  },
+  "raw_data_size": 76,
+  "severity": "Informational",
+  "severity_id": 1,
+  "time": 1791368130000,
+  "type_name": "Base Event: Unknown",
+  "type_uid": 0,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 9,
+      "mapped": 4,
+      "unmapped": 5
+    },
+    "event_uid": "9340d9e7-3061-5fff-8d2e-252050e75991",
+    "fingerprint": "14a400b05964d4b2",
+    "format": "syslog+kv",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "activity_id": "default:unknown",
+      "device.hostname": "syslog.hostname",
+      "device.type_id": "default:unknown",
+      "metadata.log_provider": "syslog.appname",
+      "severity_id": "enum:syslog.severity",
+      "time": "syslog.timestamp_raw"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "ulpf.generic.kv",
+      "spec_sha256": "f850ab917cf46fdb92f101b339f96ed6814fdb936a2da8c432c84dd5aa478b90",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 76,
+      "sha256": "aedafe0e4ab2cd6d021c2263c0beaf80f8a50df9ac2f090a7cdc4ec6afe937c0",
+      "utf8": true
+    },
+    "reasons": [
+      "generic_parser"
+    ],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "fallback",
+    "time": {
+      "assumed_timezone": "UTC",
+      "field": "syslog.timestamp_raw",
+      "format": "%b %e %H:%M:%S",
+      "skew_ms": 6270000,
+      "source": "field",
+      "year_inferred": true
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "action": "login",
+    "result": "ok",
+    "src": "10.0.0.9",
+    "syslog.facility": "local0",
+    "user": "bob"
+  }
+}

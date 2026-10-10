@@ -1,0 +1,15 @@
+[MEDIUM       ]    329 hit(s)  Cleartext syslog sent outside the network
+                vendors: FortiGate=164, PAN-OS=78, Secure Firewall ASA=2, Suricata=83, pfSense=2
+                lucene:  class_uid:4001 AND ((dst_endpoint.port:514 AND connection_info.protocol_name:udp AND action_id:1) AND (NOT (dst_endpoint.ip:10.0.0.0\/8 OR dst_endpoint.ip:172.16.0.0\/12 OR dst_endpoint.ip:192.168.0.0\/16)))
+[HIGH         ]      0 hit(s)  IDS alert observed in network traffic
+                vendors: -
+                lucene:  class_uid:4001 AND is_alert:true
+[MEDIUM       ]    150 hit(s)  Denied RDP connection attempt (any firewall vendor)
+                vendors: FortiGate=74, PAN-OS=37, Suricata=39
+                lucene:  class_uid:4001 AND (dst_endpoint.port:3389 AND action_id:2)
+[LOW          ]    462 hit(s)  Allowed SSH to a non-private address
+                vendors: FortiGate=199, PAN-OS=131, Secure Firewall ASA=1, Suricata=130, pfSense=1
+                lucene:  class_uid:4001 AND ((dst_endpoint.port:22 AND action_id:1) AND (NOT (dst_endpoint.ip:10.0.0.0\/8 OR dst_endpoint.ip:172.16.0.0\/12 OR dst_endpoint.ip:192.168.0.0\/16)))
+[INFORMATIONAL]    274 hit(s)  Events from an unknown source (no approved parser)
+                vendors: Syslog=6, unknown=268
+                lucene:  ulpf.status:fallback

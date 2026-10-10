@@ -1,0 +1,15 @@
+# ULPF fallback (static): events no spec matched, plus events that must not
+# be parsed (oversized, failed archive re-verification). They are NOT dropped:
+# finalize turns them into an OCSF Base Event with every generic layer in
+# `unmapped`, they are indexed like any other event, and they are copied to
+# the DLQ for onboarding.
+if .ulpf.oversized == true {
+  .ulpf.status = "failed"
+  .ulpf.reasons = ["oversized"]
+} else if exists(.ulpf.integrity_error) {
+  .ulpf.status = "failed"
+  .ulpf.reasons = ["archive_integrity"]
+} else {
+  .ulpf.status = "fallback"
+  .ulpf.reasons = ["no_matching_spec"]
+}

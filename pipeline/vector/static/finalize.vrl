@@ -1,0 +1,74 @@
+# ULPF finalize (static). Placeholders: @@ULPF_VERSION@@ @@OCSF_VERSION@@
+#
+# Runs on every event after parsing/fallback. It (1) builds an OCSF Base Event
+# when no parser produced one, (2) attaches OCSF-native provenance, (3) keeps
+# the raw text (and the exact bytes when they are not valid UTF-8), and
+# (4) removes ULPF's private working fields.
+raw = string!(._raw)
+pre = object(._pre) ?? {}
+pt = to_unix_timestamp(now(), unit: "milliseconds")
+
+if !exists(.class_uid) {
+  .class_uid = 0
+  .class_name = "Base Event"
+  .category_uid = 0
+  .category_name = "Uncategorized"
+  .activity_id = 0
+  .activity_name = "Unknown"
+  .type_uid = 0
+  .type_name = "Base Event: Unknown"
+  .severity_id = 0
+  .severity = "Unknown"
+  .time = .ulpf.ingest.time_ms
+  .message = string(pre.body) ?? ""
+  .metadata = {"version": "@@OCSF_VERSION@@", "product": {"name": "unknown", "vendor_name": "unknown"}}
+  um = {}
+  if exists(pre.syslog) { um.syslog = pre.syslog }
+  if exists(pre.json) { um.json = pre.json }
+  if exists(pre.cef) { um.cef = pre.cef }
+  if exists(pre.leef) { um.leef = pre.leef }
+  if exists(pre.kv) { um.kv = pre.kv }
+  if exists(pre.csv) { um.csv = pre.csv }
+  if length(um) > 0 { .unmapped = um }
+  if !exists(.ulpf.status) {
+    .ulpf.status = "failed"
+    .ulpf.reasons = ["no_ocsf_event_produced"]
+  }
+  .ulpf.time = {"source": "ingest", "note": "event time not parsed; time = receipt time"}
+}
+
+if !exists(.ulpf.parser) && .ulpf.parser_id != null {
+  .ulpf.parser = {"id": .ulpf.parser_id}
+}
+pname = string(.ulpf.parser.id) ?? "ulpf.fallback"
+puid = string(.ulpf.parser.spec_sha256) ?? ""
+ulpf_product = {"name": "ULPF", "vendor_name": "ULPF", "version": "@@ULPF_VERSION@@"}
+
+.metadata.uid = .ulpf.event_uid
+.metadata.logged_time = .ulpf.ingest.time_ms
+.metadata.processed_time = pt
+.metadata.log_format = .ulpf.format
+.metadata.loggers = [{
+  "name": .ulpf.ingest.collector_id,
+  "uid": .ulpf.ingest.collector_id,
+  "event_uid": .ulpf.event_uid,
+  "logged_time": .ulpf.ingest.time_ms,
+  "log_format": .ulpf.format,
+  "product": {"name": "ULPF Collector", "vendor_name": "ULPF", "version": "@@ULPF_VERSION@@"}
+}]
+.metadata.transformation_info_list = [{"name": pname, "uid": puid, "lang": "VRL", "time": pt, "product": ulpf_product}]
+
+.raw_data = raw
+.raw_data_size = .ulpf.raw.len
+.raw_data_hash = {"algorithm_id": 3, "algorithm": "SHA-256", "value": .ulpf.raw.sha256, "encoding_id": 1, "encoding": "Hex"}
+if .ulpf.raw.utf8 != true {
+  # raw_data (a JSON string) cannot hold invalid UTF-8; keep the exact bytes.
+  .ulpf.raw.b64 = encode_base64(raw)
+}
+
+._osid = .ulpf.event_uid
+del(.ulpf.parser_id)
+del(.ulpf.oversized)
+del(._raw)
+del(._pre)
+del(.timestamp)

@@ -1,0 +1,10 @@
+{
+  "ndjson_bytes": 134095500,
+  "not_closed_yet": 0,
+  "parquet_bytes": 8369001,
+  "problems": [],
+  "pruned": 20,
+  "rows_total": 27035,
+  "unchanged": 7,
+  "written": 13
+}

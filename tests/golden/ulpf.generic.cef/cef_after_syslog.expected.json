@@ -1,0 +1,125 @@
+{
+  "activity_id": 0,
+  "activity_name": "Unknown",
+  "category_name": "Uncategorized",
+  "category_uid": 0,
+  "class_name": "Base Event",
+  "class_uid": 0,
+  "message": "Login succeeded",
+  "metadata": {
+    "event_code": "100",
+    "log_format": "syslog+cef",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "8f2cd57b-fd8f-5bed-bba9-87c64bbdf912",
+        "log_format": "syslog+cef",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "1791368130250",
+    "product": {
+      "name": "Gateway",
+      "vendor_name": "ExampleCorp",
+      "version": "1.0"
+    },
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "ulpf.generic.cef",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "1fff375799d45b921aae9246a28f03bac5a674faf5551a6c02ef8b0517b78a88"
+      }
+    ],
+    "uid": "8f2cd57b-fd8f-5bed-bba9-87c64bbdf912",
+    "version": "1.9.0"
+  },
+  "raw_data": "<134>Oct  7 10:15:30 host CEF:0|ExampleCorp|Gateway|1.0|100|Login succeeded|3|src=10.0.0.1 dst=10.0.0.2 spt=1234 dpt=22 suser=bob rt=1791368130250",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "eef1a07c3ed5f4cb8c23a5a66313343239d9f1f0eaef598694257ff029e9c723"
+  },
+  "raw_data_size": 146,
+  "severity": "Low",
+  "severity_id": 2,
+  "time": 1791368130250,
+  "type_name": "Base Event: Unknown",
+  "type_uid": 0,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 13,
+      "mapped": 7,
+      "unmapped": 6
+    },
+    "event_uid": "8f2cd57b-fd8f-5bed-bba9-87c64bbdf912",
+    "fingerprint": "2af276119e1729f1",
+    "format": "syslog+cef",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "activity_id": "default:unknown",
+      "message": "name",
+      "metadata.event_code": "deviceEventClassId",
+      "metadata.product.name": "deviceProduct",
+      "metadata.product.vendor_name": "deviceVendor",
+      "metadata.product.version": "deviceVersion",
+      "severity_id": "enum:severity",
+      "time": "rt"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "ulpf.generic.cef",
+      "spec_sha256": "1fff375799d45b921aae9246a28f03bac5a674faf5551a6c02ef8b0517b78a88",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 146,
+      "sha256": "eef1a07c3ed5f4cb8c23a5a66313343239d9f1f0eaef598694257ff029e9c723",
+      "utf8": true
+    },
+    "reasons": [
+      "generic_parser"
+    ],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "fallback",
+    "time": {
+      "assumed_timezone": null,
+      "field": "rt",
+      "format": "epoch_auto",
+      "skew_ms": 6269750,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "cefVersion": "0",
+    "dpt": "22",
+    "dst": "10.0.0.2",
+    "spt": "1234",
+    "src": "10.0.0.1",
+    "suser": "bob"
+  }
+}

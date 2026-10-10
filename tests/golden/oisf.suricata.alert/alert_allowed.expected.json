@@ -1,0 +1,159 @@
+{
+  "action": "Allowed",
+  "action_id": 1,
+  "activity_id": 6,
+  "activity_name": "Traffic",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "tcp",
+    "protocol_num": 6,
+    "uid": "1000000424242"
+  },
+  "device": {
+    "interface_name": "eth0",
+    "type": "IDS",
+    "type_id": 13
+  },
+  "disposition": "Detected",
+  "disposition_id": 15,
+  "dst_endpoint": {
+    "ip": "203.0.113.20",
+    "port": 443
+  },
+  "is_alert": true,
+  "message": "ULPF SYNTHETIC test signature",
+  "metadata": {
+    "event_code": "9000001",
+    "log_format": "json",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "86840110-4ea2-558d-a571-241b9a814fd7",
+        "log_format": "json",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "2026-10-07T10:15:30.250000+0000",
+    "product": {
+      "name": "Suricata",
+      "vendor_name": "OISF"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "oisf.suricata.alert",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "8c7ea0cdd467b3fd5600198da3087a866e683912d055c4d20c31211be2227169"
+      }
+    ],
+    "uid": "86840110-4ea2-558d-a571-241b9a814fd7",
+    "version": "1.9.0"
+  },
+  "raw_data": "{\"timestamp\":\"2026-10-07T10:15:30.250000+0000\",\"flow_id\":1000000424242,\"in_iface\":\"eth0\",\"event_type\":\"alert\",\"src_ip\":\"10.1.1.20\",\"src_port\":51515,\"dest_ip\":\"203.0.113.20\",\"dest_port\":443,\"proto\":\"TCP\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":9000001,\"rev\":1,\"signature\":\"ULPF SYNTHETIC test signature\",\"category\":\"Attempted Information Leak\",\"severity\":2}}",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "a4cbfac83e93b956527fa49d27162f38c2480c59825f0fd1aed83e5bef25a380"
+  },
+  "raw_data_size": 368,
+  "severity": "Medium",
+  "severity_id": 3,
+  "src_endpoint": {
+    "ip": "10.1.1.20",
+    "port": 51515
+  },
+  "time": 1791368130250,
+  "type_name": "Network Activity: Traffic",
+  "type_uid": 400106,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 16,
+      "mapped": 12,
+      "unmapped": 4
+    },
+    "event_uid": "86840110-4ea2-558d-a571-241b9a814fd7",
+    "fingerprint": "460bcc0a40befeb7",
+    "format": "json",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:alert.action",
+      "activity_id": "const",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "proto",
+      "connection_info.protocol_num": "derived:iana_protocol_num(connection_info.protocol_name)",
+      "connection_info.uid": "flow_id",
+      "device.interface_name": "in_iface",
+      "device.type_id": "const",
+      "disposition_id": "enum:alert.action",
+      "dst_endpoint.ip": "dest_ip",
+      "dst_endpoint.port": "dest_port",
+      "is_alert": "const",
+      "message": "alert.signature",
+      "metadata.event_code": "alert.signature_id",
+      "severity_id": "enum:alert.severity",
+      "src_endpoint.ip": "src_ip",
+      "src_endpoint.port": "src_port",
+      "time": "timestamp"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "oisf.suricata.alert",
+      "spec_sha256": "8c7ea0cdd467b3fd5600198da3087a866e683912d055c4d20c31211be2227169",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 368,
+      "sha256": "a4cbfac83e93b956527fa49d27162f38c2480c59825f0fd1aed83e5bef25a380",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "timestamp",
+      "format": "%Y-%m-%dT%H:%M:%S%.f%z",
+      "skew_ms": 6269750,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "alert.category": "Attempted Information Leak",
+    "alert.gid": 1,
+    "alert.rev": 1,
+    "event_type": "alert"
+  }
+}

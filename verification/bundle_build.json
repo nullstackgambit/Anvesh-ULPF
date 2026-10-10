@@ -1,0 +1,7 @@
+{
+  "bundle_dir": "<repo>/runtime/bundle/ulpf-bundle-0.1.0",
+  "bytes": 533964391,
+  "files": 242,
+  "manifest_sha256": "8a0f5fd326165714a0567cf6238c18db920203d18a0b6d9c039995f4509ced80",
+  "release_pub_sha256": "811f0986fb4f4dd515b0d33e6d8221559002b858099520ca01bf05da033c7eea"
+}

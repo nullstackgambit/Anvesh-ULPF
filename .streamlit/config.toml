@@ -1,0 +1,59 @@
+# Theme of the ULPF operator UI. Streamlit reads it because `ulpf stack up ui`
+# runs from the repository root; layout and component styling are in
+# ulpf/ui/theme.py, server options on the command line in ulpf/stack.py.
+[theme]
+base = "light"
+primaryColor = "#4a2bc2"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f5f5f5"
+textColor = "#171717"                    # 17.9:1 on white
+linkColor = "#4a2bc2"
+linkUnderline = true
+borderColor = "#e5e5e5"
+dataframeBorderColor = "#e5e5e5"
+dataframeHeaderBackgroundColor = "#f2efff"
+dataframeHeaderTextColor = "#24145c"         # 14.0:1 on the header background
+showWidgetBorder = true
+showSidebarBorder = false
+baseRadius = "0.5rem"
+buttonRadius = "0.375rem"
+font = "'Noto Sans', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, 'Noto Sans Devanagari', 'Nirmala UI', Mangal, sans-serif"
+headingFont = "'Noto Sans', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, 'Noto Sans Devanagari', 'Nirmala UI', Mangal, sans-serif"
+codeFont = "'Noto Sans Mono', 'DejaVu Sans Mono', Menlo, Consolas, monospace"
+headingFontWeights = [700, 700, 700, 650, 600, 600]
+metricValueFontSize = "1.75rem"
+metricValueFontWeight = 700
+
+# Alerts (st.info/success/warning/error): text on the tinted backgrounds has
+# 5.1:1 to 8.9:1 contrast.
+greenColor = "#128937"
+greenBackgroundColor = "#f2fcef"
+greenTextColor = "#00522c"
+redColor = "#db372d"
+redBackgroundColor = "#fff8f8"
+redTextColor = "#8a1a16"
+orangeColor = "#fa8c16"
+orangeBackgroundColor = "#fff7e6"
+orangeTextColor = "#ad4e00"
+yellowColor = "#fa8c16"
+yellowBackgroundColor = "#fff7e6"
+yellowTextColor = "#ad4e00"
+blueColor = "#3271ea"
+blueBackgroundColor = "#f5faff"
+blueTextColor = "#04409f"
+violetColor = "#4a2bc2"
+violetBackgroundColor = "#f2efff"
+violetTextColor = "#301c7d"
+grayColor = "#737373"
+grayBackgroundColor = "#f5f5f5"
+grayTextColor = "#525252"
+
+# Chart series, in this fixed order. Validated with the data-viz palette
+# checks on a white surface: every slot inside the OKLCH lightness band
+# 0.43-0.77 with chroma >= 0.10; worst adjacent pair Delta E 12.6 under
+# protanopia/deuteranopia (target >= 8) and 25.2 for normal vision
+# (floor >= 15); contrast >= 3.34:1; the first three slots also pass
+# all-pairs. None of them is a status colour step.
+chartCategoricalColors = ["#4a2bc2", "#c47d00", "#006c35", "#8e55b3", "#d46b08", "#08979c", "#b3251e", "#3271ea"]
+# magnitude: one hue, dark to light
+chartSequentialColors = ["#1a0e3d", "#24145c", "#301c7d", "#3d239f", "#4a2bc2", "#6a4eff", "#8670ff", "#a391ff", "#c0b3ff", "#dcd4ff"]

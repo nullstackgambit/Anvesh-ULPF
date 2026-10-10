@@ -1,0 +1,35 @@
+# Generic LEEF 1.0/2.0 catch-all -> OCSF Base Event (status=fallback).
+# Header + delimiter rules: IBM QRadar LEEF format guide. devTime is not parsed:
+# its format is given per event by devTimeFormat (dynamic), so it stays in
+# unmapped and time falls back to the receipt time.
+id: ulpf.generic.leef
+version: 1.0.0
+status: approved
+generic: true
+vendor: Generic
+product: LEEF
+references:
+  - https://www.ibm.com/docs/SS42VS_DSM/com.ibm.dsm.doc/c_LEEF_Format_Guide_LEEFeventcomps.html
+samples: synthetic
+priority: 20
+ocsf:
+  class: base_event
+  profiles: []
+match:
+  all:
+    - {layer: leef}
+parse:
+  kind: leef
+fields:
+  leef.vendor:          {to: metadata.product.vendor_name, type: string}
+  leef.product:         {to: metadata.product.name, type: string}
+  leef.product_version: {to: metadata.product.version, type: string}
+  leef.event_id:        {to: metadata.event_code, type: string}
+tests:
+  - name: leef2_caret
+    raw: "LEEF:2.0|ExampleCorp|Gateway|1.0|200|^|src=10.0.0.1^dst=10.0.0.2^usrName=bob"
+    expect:
+      ulpf.status: fallback
+      metadata.product.vendor_name: ExampleCorp
+      metadata.event_code: "200"
+      unmapped.usrName: bob

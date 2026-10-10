@@ -1,0 +1,111 @@
+[   0.0s] $ ulpf stack down opensearch
+    opensearch: stopped
+[   0.6s] $ ulpf gen --vendor fortigate --vendor panos --count 2000 --transport tcp --eps 200 --seed 81 --sendlog <repo>/runtime/data/sendlog-outage-1791378968.ndjson
+    sent 2000 event(s) via tcp to 127.0.0.1:5514
+[  10.7s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791378968.ndjson --no-opensearch --json
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 29035,
+      "archived_not_normalized": 0,
+      "normalized": 29035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 40,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 5.0,
+      "status": {
+        "fallback": 356,
+        "parsed": 28679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 2000.0
+      },
+      "verdict": "PASS"
+    }
+[  18.6s] while OpenSearch is DOWN: sent=2000 sent_not_archived=0 archived_not_normalized=0 verdict(no index)=PASS
+[  18.6s] $ ulpf stack up opensearch
+    opensearch: healthy (pid 86465)
+    opensearch bootstrap: {'template': 'updated', 'write_index': ['ulpf-events-v2']}
+[  39.1s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791378968.ndjson --json --settle 5
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 29035,
+      "archived_not_indexed": 2000,
+      "archived_not_normalized": 0,
+      "indexed": 27035,
+      "indexed_not_archived": 0,
+      "normalized": 29035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 44,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 4.3,
+      "status": {
+        "fallback": 356,
+        "parsed": 28679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 2000.0
+      },
+      "verdict": "FAIL"
+    }
+[  51.7s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791378968.ndjson --json --settle 5
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 29035,
+      "archived_not_indexed": 2000,
+      "archived_not_normalized": 0,
+      "indexed": 27035,
+      "indexed_not_archived": 0,
+      "normalized": 29035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 44,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 4.2,
+      "status": {
+        "fallback": 356,
+        "parsed": 28679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 2000.0
+      },
+      "verdict": "FAIL"
+    }
+[  63.5s] $ ulpf account --sendlog <repo>/runtime/data/sendlog-outage-1791378968.ndjson --json --settle 5
+    {
+      "archive_uid_duplicates": 0,
+      "archived": 29035,
+      "archived_not_indexed": 0,
+      "archived_not_normalized": 0,
+      "indexed": 29035,
+      "indexed_not_archived": 0,
+      "normalized": 29035,
+      "normalized_not_archived": 0,
+      "recorded_losses": {
+        "other_warn": 44,
+        "tls_handshake_rejected": 2
+      },
+      "sent": 2000,
+      "sent_not_archived": 0,
+      "settled_after_s": 5.4,
+      "status": {
+        "fallback": 356,
+        "parsed": 28679
+      },
+      "vector_received_by_source": {
+        "in_syslog_tcp": 2000.0
+      },
+      "verdict": "PASS"
+    }
+[  71.6s] after restart: indexed=29035 archived_not_indexed=0 verdict=PASS
+[  71.6s] OUTAGE TEST: PASS

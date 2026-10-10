@@ -1,0 +1,14 @@
+archived                     5410
+normalized                   5410
+status                       {'parsed': 5136, 'fallback': 274}
+archive_uid_duplicates       0
+archived_not_normalized      0
+normalized_not_archived      0
+recorded_losses              {}
+sent                         4000
+sent_not_archived            0
+vector_received_by_source    {'in_syslog_tcp': 4000.0}
+indexed                      5410
+archived_not_indexed         0
+indexed_not_archived         0
+verdict                      PASS

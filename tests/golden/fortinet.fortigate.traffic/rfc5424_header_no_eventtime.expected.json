@@ -1,0 +1,158 @@
+{
+  "action": "Allowed",
+  "action_id": 1,
+  "activity_id": 6,
+  "activity_name": "Traffic",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "community_uid": "1:GHxz14r544EAjsTjh260QYtBm7k=",
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "tcp",
+    "protocol_num": 6
+  },
+  "device": {
+    "type": "Firewall",
+    "type_id": 9,
+    "uid": "FGT60FTK00000001"
+  },
+  "disposition": "Allowed",
+  "disposition_id": 1,
+  "dst_endpoint": {
+    "ip": "203.0.113.99",
+    "port": 80
+  },
+  "is_src_dst_assignment_known": true,
+  "metadata": {
+    "event_code": "0000000013",
+    "log_format": "syslog+kv",
+    "log_name": "traffic",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "285d19a7-bf8e-5f11-803b-2e0dba4ad498",
+        "log_format": "syslog+kv",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "2026-10-07 16:35:00 +0530",
+    "product": {
+      "name": "FortiGate",
+      "vendor_name": "Fortinet"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "fortinet.fortigate.traffic",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "7658d632a88b881cbb1d2b1c949ee588b9c528d2d15ee48b99b78fa99e5a213f"
+      }
+    ],
+    "uid": "285d19a7-bf8e-5f11-803b-2e0dba4ad498",
+    "version": "1.9.0"
+  },
+  "raw_data": "<189>1 2026-10-07T11:05:00Z FGT-HQ-01 - - - - date=2026-10-07 time=16:35:00 tz=\"+0530\" devid=\"FGT60FTK00000001\" logid=\"0000000013\" type=\"traffic\" subtype=\"forward\" level=\"notice\" srcip=10.9.9.9 srcport=1111 dstip=203.0.113.99 dstport=80 proto=6 action=\"accept\"",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "354392fe579d913813fe2b8643206ddb7dd2365e14129c01c4eddc35157e32ec"
+  },
+  "raw_data_size": 260,
+  "severity": "Informational",
+  "severity_id": 1,
+  "src_endpoint": {
+    "ip": "10.9.9.9",
+    "port": 1111
+  },
+  "time": 1791371100000,
+  "timezone_offset": 330,
+  "type_name": "Network Activity: Traffic",
+  "type_uid": 400106,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 14,
+      "mapped": 13,
+      "unmapped": 1
+    },
+    "event_uid": "285d19a7-bf8e-5f11-803b-2e0dba4ad498",
+    "fingerprint": "457320e6419edf8a",
+    "format": "syslog+kv",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:action",
+      "activity_id": "enum:action",
+      "connection_info.community_uid": "derived:community_id",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "derived:iana_protocol_name(connection_info.protocol_num)",
+      "connection_info.protocol_num": "proto",
+      "device.type_id": "const",
+      "device.uid": "devid",
+      "disposition_id": "enum:action",
+      "dst_endpoint.ip": "dstip",
+      "dst_endpoint.port": "dstport",
+      "is_src_dst_assignment_known": "const",
+      "metadata.event_code": "logid",
+      "metadata.log_name": "type",
+      "severity_id": "enum:level",
+      "src_endpoint.ip": "srcip",
+      "src_endpoint.port": "srcport",
+      "time": "date+time+tz",
+      "timezone_offset": "tz"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "fortinet.fortigate.traffic",
+      "spec_sha256": "7658d632a88b881cbb1d2b1c949ee588b9c528d2d15ee48b99b78fa99e5a213f",
+      "version": "1.1.0"
+    },
+    "raw": {
+      "len": 260,
+      "sha256": "354392fe579d913813fe2b8643206ddb7dd2365e14129c01c4eddc35157e32ec",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "date+time+tz",
+      "format": "%Y-%m-%d %H:%M:%S",
+      "skew_ms": 3300000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "subtype": "forward"
+  }
+}

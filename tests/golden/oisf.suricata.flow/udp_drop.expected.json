@@ -1,0 +1,171 @@
+{
+  "action": "Denied",
+  "action_id": 2,
+  "activity_id": 2,
+  "activity_name": "Close",
+  "app_name": "dns",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "Network Activity",
+  "class_uid": 4001,
+  "connection_info": {
+    "community_uid": "1:oN9TZxsqjTcnQwV+06gSzuia/zE=",
+    "direction": "Unknown",
+    "direction_id": 0,
+    "protocol_name": "udp",
+    "protocol_num": 17,
+    "uid": "1000000000077"
+  },
+  "device": {
+    "interface_name": "eth0",
+    "type": "IDS",
+    "type_id": 13
+  },
+  "disposition": "Dropped",
+  "disposition_id": 6,
+  "dst_endpoint": {
+    "ip": "198.51.100.53",
+    "port": 53
+  },
+  "is_alert": false,
+  "metadata": {
+    "log_format": "json",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "b109f820-8869-5cf9-9671-2e38d2cf9abe",
+        "log_format": "json",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "2026-10-07T11:00:00.000000+0000",
+    "product": {
+      "name": "Suricata",
+      "vendor_name": "OISF"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "oisf.suricata.flow",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "a4771ff0b1dc25902fb67cd7f690ebd334dc5a7359ca2ec5d18860b31f5181e9"
+      }
+    ],
+    "uid": "b109f820-8869-5cf9-9671-2e38d2cf9abe",
+    "version": "1.9.0"
+  },
+  "raw_data": "{\"timestamp\":\"2026-10-07T11:00:00.000000+0000\",\"flow_id\":1000000000077,\"in_iface\":\"eth0\",\"event_type\":\"flow\",\"src_ip\":\"10.2.3.4\",\"src_port\":40000,\"dest_ip\":\"198.51.100.53\",\"dest_port\":53,\"proto\":\"UDP\",\"app_proto\":\"dns\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":80,\"bytes_toclient\":0,\"start\":\"2026-10-07T11:00:00.000000+0000\",\"end\":\"2026-10-07T11:00:00.000000+0000\",\"age\":12,\"state\":\"closed\",\"reason\":\"timeout\",\"alerted\":false,\"action\":\"drop\"}}",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "f0beb094df0c7b44306bad583cf3dde6deb146c9f183df8597f9a2d0c978771f"
+  },
+  "raw_data_size": 462,
+  "severity": "Unknown",
+  "severity_id": 0,
+  "src_endpoint": {
+    "ip": "10.2.3.4",
+    "port": 40000
+  },
+  "status_detail": "timeout",
+  "time": 1791370800000,
+  "traffic": {
+    "bytes_in": 0,
+    "bytes_out": 80,
+    "packets_in": 0,
+    "packets_out": 1
+  },
+  "type_name": "Network Activity: Close",
+  "type_uid": 400102,
+  "ulpf": {
+    "coverage": {
+      "empty": 0,
+      "fields": 21,
+      "mapped": 17,
+      "unmapped": 4
+    },
+    "event_uid": "b109f820-8869-5cf9-9671-2e38d2cf9abe",
+    "fingerprint": "fd3b33199dcad47e",
+    "format": "json",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:flow.action",
+      "activity_id": "enum:flow.state",
+      "app_name": "app_proto",
+      "connection_info.community_uid": "derived:community_id",
+      "connection_info.direction_id": "default:unknown",
+      "connection_info.protocol_name": "proto",
+      "connection_info.protocol_num": "derived:iana_protocol_num(connection_info.protocol_name)",
+      "connection_info.uid": "flow_id",
+      "device.interface_name": "in_iface",
+      "device.type_id": "const",
+      "disposition_id": "enum:flow.action",
+      "dst_endpoint.ip": "dest_ip",
+      "dst_endpoint.port": "dest_port",
+      "is_alert": "flow.alerted",
+      "severity_id": "default:unknown",
+      "src_endpoint.ip": "src_ip",
+      "src_endpoint.port": "src_port",
+      "status_detail": "flow.reason",
+      "time": "timestamp",
+      "traffic.bytes_in": "flow.bytes_toclient",
+      "traffic.bytes_out": "flow.bytes_toserver",
+      "traffic.packets_in": "flow.pkts_toclient",
+      "traffic.packets_out": "flow.pkts_toserver"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "oisf.suricata.flow",
+      "spec_sha256": "a4771ff0b1dc25902fb67cd7f690ebd334dc5a7359ca2ec5d18860b31f5181e9",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 462,
+      "sha256": "f0beb094df0c7b44306bad583cf3dde6deb146c9f183df8597f9a2d0c978771f",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "timestamp",
+      "format": "%Y-%m-%dT%H:%M:%S%.f%z",
+      "skew_ms": 3600000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "event_type": "flow",
+    "flow.age": 12,
+    "flow.end": "2026-10-07T11:00:00.000000+0000",
+    "flow.start": "2026-10-07T11:00:00.000000+0000"
+  }
+}

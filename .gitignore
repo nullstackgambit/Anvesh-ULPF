@@ -1,0 +1,21 @@
+# Runtime state: downloaded binaries, data, logs, secrets. Never committed.
+/runtime/
+/.venv/
+/dist/
+/build/
+*.egg-info/
+__pycache__/
+.pytest_cache/
+
+# Built per installation by `ulpf spec compile` (contains local absolute paths).
+/pipeline/vector/generated/
+
+# Onboarding drafts: work in progress, and may embed real log samples.
+/specs/_drafts/
+
+# Secrets and key material are generated at install time.
+/deploy/keys/*
+!/deploy/keys/README.md
+/deploy/certs/*
+!/deploy/certs/README.md
+/.streamlit/secrets.toml

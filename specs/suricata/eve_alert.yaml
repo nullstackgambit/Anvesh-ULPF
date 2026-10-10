@@ -1,0 +1,64 @@
+# Suricata EVE JSON alert events -> OCSF Network Activity (is_alert = true)
+#
+# OCSF 1.9.0 Detection Finding (2004) has no src_endpoint/dst_endpoint/
+# connection_info attributes (network context lives in evidences[], arrays are
+# not targeted by this compiler). Representing the alert as Network Activity
+# with is_alert keeps the 5-tuple in the same fields as every other vendor.
+id: oisf.suricata.alert
+version: 1.0.0
+status: approved
+vendor: OISF
+product: Suricata
+description: Suricata EVE event_type=alert.
+references:
+  - https://docs.suricata.io/en/latest/output/eve/eve-json-format.html
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: [host, security_control]
+match:
+  all:
+    - {field: json.event_type, equals: alert}
+    - {field: json.alert, exists: true}
+parse:
+  kind: json
+time:
+  - {field: timestamp, format: "%Y-%m-%dT%H:%M:%S%.f%z"}
+fields:
+  src_ip:    {to: src_endpoint.ip, type: ip}
+  src_port:  {to: src_endpoint.port, type: port}
+  dest_ip:   {to: dst_endpoint.ip, type: ip}
+  dest_port: {to: dst_endpoint.port, type: port}
+  proto:     {to: connection_info.protocol_name, type: string, transform: lower}
+  flow_id:   {to: connection_info.uid, type: string}
+  app_proto: {to: app_name, type: string}
+  in_iface:  {to: device.interface_name, type: string}
+  alert.signature:    {to: message, type: string}
+  alert.signature_id: {to: metadata.event_code, type: string}
+enums:
+  # POLICY: Suricata priority 1 is the most severe.
+  - source: alert.severity
+    map: {"1": {severity_id: 4}, "2": {severity_id: 3}, "3": {severity_id: 2}, "4": {severity_id: 1}}
+    default: {severity_id: 99}
+  - source: alert.action
+    map: {allowed: {action_id: 1, disposition_id: 15}, blocked: {action_id: 2, disposition_id: 2}}
+    default: {action_id: 99, disposition_id: 99}
+set:
+  is_alert: true
+  activity_id: 6
+  device.type_id: 13
+derive:
+  - {to: connection_info.protocol_num, using: iana_protocol_num, from: connection_info.protocol_name}
+tests:
+  - name: alert_allowed
+    raw: "{\"timestamp\":\"2026-10-07T10:15:30.250000+0000\",\"flow_id\":1000000424242,\"in_iface\":\"eth0\",\"event_type\":\"alert\",\"src_ip\":\"10.1.1.20\",\"src_port\":51515,\"dest_ip\":\"203.0.113.20\",\"dest_port\":443,\"proto\":\"TCP\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":9000001,\"rev\":1,\"signature\":\"ULPF SYNTHETIC test signature\",\"category\":\"Attempted Information Leak\",\"severity\":2}}"
+    expect:
+      ulpf.status: parsed
+      is_alert: true
+      severity_id: 3
+      action_id: 1
+      disposition: Detected
+      message: ULPF SYNTHETIC test signature
+      metadata.event_code: "9000001"
+      dst_endpoint.ip: 203.0.113.20

@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ulpf"
+version = "0.1.0"
+description = "Universal Log Pre-processing Framework: lossless, provenance-preserving normalization of security logs to OCSF"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{ name = "ULPF contributors" }]
+# Core runtime dependencies (control plane). Versions are pinned exactly in
+# requirements.lock; ranges here only document compatibility that was tested.
+dependencies = [
+    "PyYAML==6.0.3",
+    "jsonschema==4.26.0",
+    "cryptography==50.0.2",
+    "click==8.5.0",
+]
+
+[project.optional-dependencies]
+# drain3 0.9.11 pins jsonpickle==1.5.1 and cachetools==4.2.1 exactly; this
+# combination was verified on CPython 3.12.3 (verification/DEPENDENCIES.md).
+onboard = ["drain3==0.9.11", "jsonpickle==1.5.1", "cachetools==4.2.1"]
+lake = ["pyarrow==25.0.1"]
+ml = ["scikit-learn==1.9.1", "numpy==2.5.3"]
+ui = ["streamlit==1.65.0", "pandas==3.0.6"]
+# pySigma-backend-opensearch 2.0.3 requires pysigma<2.0.0 (LGPL licensed, optional).
+sigma = ["pySigma==1.5.1", "pySigma-backend-opensearch==2.0.3"]
+test = ["pytest==9.1.1"]
+
+[project.scripts]
+ulpf = "ulpf.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ulpf*"]
+
+[tool.setuptools.package-data]
+ulpf = ["ui/*.py"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "vector: needs the Vector binary (runtime/vector/bin/vector)",
+    "opensearch: needs a running OpenSearch at ULPF_OPENSEARCH_URL",
+    "slow: long-running test",
+]

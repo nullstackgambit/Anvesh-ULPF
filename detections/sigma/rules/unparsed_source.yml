@@ -1,0 +1,16 @@
+title: Events from an unknown source (no approved parser)
+id: 04c94b03-b194-4a46-9861-284cfb9b85d9
+status: experimental
+description: Operational detection. Events no approved spec claimed are kept losslessly as fallback; a burst means a new source needs onboarding (ulpf fingerprint / onboard).
+author: ULPF
+date: 2026-10-07
+logsource:
+  product: ulpf
+  service: pipeline
+detection:
+  selection:
+    ulpf.status: fallback
+  condition: selection
+falsepositives:
+  - Expected while a source is being onboarded
+level: informational

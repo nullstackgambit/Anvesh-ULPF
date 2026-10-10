@@ -1,0 +1,145 @@
+{
+  "action": "Denied",
+  "action_id": 2,
+  "activity_id": 3,
+  "activity_name": "Get",
+  "category_name": "Network Activity",
+  "category_uid": 4,
+  "class_name": "HTTP Activity",
+  "class_uid": 4002,
+  "disposition": "Blocked",
+  "disposition_id": 2,
+  "http_request": {
+    "http_method": "GET",
+    "url": {
+      "url_string": "http://blocked.example.net/"
+    }
+  },
+  "http_response": {
+    "code": 403,
+    "content_type": "text/html",
+    "length": 0
+  },
+  "metadata": {
+    "log_format": "text",
+    "logged_time": 1791374400000,
+    "loggers": [
+      {
+        "event_uid": "3b25fea4-dd2e-5eff-bb84-4fbb9b6cefe1",
+        "log_format": "text",
+        "logged_time": 1791374400000,
+        "name": "golden",
+        "product": {
+          "name": "ULPF Collector",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "golden"
+      }
+    ],
+    "original_time": "1791370800.000",
+    "product": {
+      "name": "Squid",
+      "vendor_name": "Squid Project"
+    },
+    "profiles": [
+      "host",
+      "security_control"
+    ],
+    "transformation_info_list": [
+      {
+        "lang": "VRL",
+        "name": "squid.squid.access",
+        "product": {
+          "name": "ULPF",
+          "vendor_name": "ULPF",
+          "version": "0.1.0"
+        },
+        "uid": "a6852b6fafa67fb6b379ef5138c5b9efa86e2cb2ecad30fbeaba239db402089c"
+      }
+    ],
+    "uid": "3b25fea4-dd2e-5eff-bb84-4fbb9b6cefe1",
+    "version": "1.9.0"
+  },
+  "raw_data": "1791370800.000    120 10.2.3.4 TCP_DENIED/403 0 GET http://blocked.example.net/ - HIER_NONE/- text/html",
+  "raw_data_hash": {
+    "algorithm": "SHA-256",
+    "algorithm_id": 3,
+    "encoding": "Hex",
+    "encoding_id": 1,
+    "value": "7deaa781069ba8ddf9ef5b209d4da57b91b684806a250bd7d347845c530df9b0"
+  },
+  "raw_data_size": 103,
+  "severity": "Unknown",
+  "severity_id": 0,
+  "src_endpoint": {
+    "ip": "10.2.3.4"
+  },
+  "time": 1791370800000,
+  "type_name": "HTTP Activity: Get",
+  "type_uid": 400203,
+  "ulpf": {
+    "coverage": {
+      "empty": 2,
+      "empty_fields": [
+        "peer",
+        "user"
+      ],
+      "fields": 12,
+      "mapped": 8,
+      "unmapped": 2
+    },
+    "event_uid": "3b25fea4-dd2e-5eff-bb84-4fbb9b6cefe1",
+    "fingerprint": "bb8e1d020085adee",
+    "format": "text",
+    "ingest": {
+      "collector_id": "golden",
+      "peer": {},
+      "time": "2026-10-07T12:00:00.000000000Z",
+      "time_ms": 1791374400000,
+      "transport": "test"
+    },
+    "lineage": {
+      "action_id": "enum:squid_code",
+      "activity_id": "enum:method",
+      "disposition_id": "enum:squid_code",
+      "http_request.http_method": "method",
+      "http_request.url.url_string": "url",
+      "http_response.code": "http_status",
+      "http_response.content_type": "content_type",
+      "http_response.length": "bytes",
+      "severity_id": "default:unknown",
+      "src_endpoint.ip": "client",
+      "time": "time"
+    },
+    "parser": {
+      "compiler": "ulpf 0.1.0",
+      "id": "squid.squid.access",
+      "spec_sha256": "a6852b6fafa67fb6b379ef5138c5b9efa86e2cb2ecad30fbeaba239db402089c",
+      "version": "1.0.0"
+    },
+    "raw": {
+      "len": 103,
+      "sha256": "7deaa781069ba8ddf9ef5b209d4da57b91b684806a250bd7d347845c530df9b0",
+      "utf8": true
+    },
+    "reasons": [],
+    "replay": {
+      "run": "golden"
+    },
+    "status": "parsed",
+    "time": {
+      "assumed_timezone": null,
+      "field": "time",
+      "format": "epoch_auto",
+      "skew_ms": 3600000,
+      "source": "field",
+      "year_inferred": false
+    },
+    "v": 1
+  },
+  "unmapped": {
+    "elapsed": "120",
+    "hierarchy": "HIER_NONE"
+  }
+}

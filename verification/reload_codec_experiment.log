@@ -1,0 +1,5 @@
+# 2026-10-10T09:15:27Z vector 0.58.0 (x86_64-unknown-linux-musl 2bcad9b 2026-08-26 13:37:07.557544670) | burst N=60000 | work dir runtime/tmp/reload-exp-20261010T091527Z
+1. hot reload, same sink key, json -> text: lines=61000 empty_lines=2048 distinct=58952 missing=2048 duplicated=0
+2. hot reload, sink renamed out -> out_v2  : lines=61000 empty_lines=0 distinct=61000 missing=0 duplicated=0
+3. graceful stop, then start with config B : lines=61000 empty_lines=0 distinct=61000 missing=0 duplicated=0
+exit=0

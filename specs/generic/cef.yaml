@@ -1,0 +1,67 @@
+# Generic CEF catch-all -> OCSF Base Event (status=fallback).
+# Header semantics: ArcSight CEF Implementation Standard (header fields and
+# agentSeverity: Unknown/Low/Medium/High/Very-High, 0-3 Low, 4-6 Medium,
+# 7-8 High, 9-10 Very-High). Extension keys stay in `unmapped`: Base Event has
+# no endpoint attributes, and the in/out byte keys are used inconsistently by
+# vendors (the dictionary defines `in` as source->destination).
+id: ulpf.generic.cef
+version: 1.0.0
+status: approved
+generic: true
+vendor: Generic
+product: CEF
+references:
+  - https://www.microfocus.com/documentation/arcsight/arcsight-smartconnectors-8.4/cef-implementation-standard/Content/CEF/Chapter%201%20What%20is%20CEF.htm
+  - https://www.microfocus.com/documentation/arcsight/arcsight-smartconnectors-8.4/cef-implementation-standard/Content/CEF/Chapter%202%20ArcSight%20Extension.htm
+samples: synthetic
+priority: 20
+ocsf:
+  class: base_event
+  profiles: []
+match:
+  all:
+    - {layer: cef}
+parse:
+  kind: cef
+time:
+  # rt: "MMM dd yyyy HH:mm:ss or milliseconds since epoch"
+  - {field: rt, format: epoch_auto}
+  - {field: rt, format: "%b %d %Y %H:%M:%S", timezone: UTC}
+fields:
+  name:               {to: message, type: string}
+  deviceEventClassId: {to: metadata.event_code, type: string}
+  deviceVendor:       {to: metadata.product.vendor_name, type: string}
+  deviceProduct:      {to: metadata.product.name, type: string}
+  deviceVersion:      {to: metadata.product.version, type: string}
+enums:
+  - source: severity
+    map:
+      "0": {severity_id: 2}
+      "1": {severity_id: 2}
+      "2": {severity_id: 2}
+      "3": {severity_id: 2}
+      "4": {severity_id: 3}
+      "5": {severity_id: 3}
+      "6": {severity_id: 3}
+      "7": {severity_id: 4}
+      "8": {severity_id: 4}
+      "9": {severity_id: 5}
+      "10": {severity_id: 5}
+      unknown: {severity_id: 0}
+      low: {severity_id: 2}
+      medium: {severity_id: 3}
+      high: {severity_id: 4}
+      very-high: {severity_id: 5}
+    default: {severity_id: 99}
+tests:
+  - name: cef_after_syslog
+    raw: "<134>Oct  7 10:15:30 host CEF:0|ExampleCorp|Gateway|1.0|100|Login succeeded|3|src=10.0.0.1 dst=10.0.0.2 spt=1234 dpt=22 suser=bob rt=1791368130250"
+    expect:
+      ulpf.status: fallback
+      message: Login succeeded
+      metadata.product.vendor_name: ExampleCorp
+      metadata.product.name: Gateway
+      metadata.event_code: "100"
+      severity_id: 2
+      time: 1791368130250
+      unmapped.src: 10.0.0.1

@@ -1,0 +1,22 @@
+title: Cleartext syslog sent outside the network
+id: e4c0e112-d51d-470e-917e-d7c010c85d8d
+status: experimental
+description: UDP/514 (unencrypted syslog) to a non-private destination was allowed.
+author: ULPF
+date: 2026-10-07
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 514
+    protocol: udp
+    action_id: 1
+  private:
+    dst_ip|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not private
+falsepositives:
+  - Managed log forwarding to a known collector
+level: medium

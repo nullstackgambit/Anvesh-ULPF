@@ -1,0 +1,32 @@
+# ULPF replay/test envelope (static). Placeholders: @@REPLAY_RUN@@
+#
+# Input : one raw-archive record per event (stdin, json codec).
+# Output: the same shape the live envelope produces, re-using the archived
+#         event_uid, ingest time, collector, transport and peer, so a replayed
+#         event is the same event processed by a newer parser.
+# The archived bytes are re-verified here: a record whose base64 payload does
+# not match its recorded SHA-256/length is still processed, but flagged and
+# forced to status=failed (reason archive_integrity) in the fallback stage.
+rec = .
+raw, b64_err = decode_base64(string(rec.raw_b64) ?? "")
+ts = parse_timestamp(string(rec.ingest_time) ?? "", format: "%+") ?? now()
+u = {}
+u.v = 1
+u.event_uid = string(rec.event_uid) ?? uuid_v7(ts)
+u.ingest = {
+  "time": rec.ingest_time,
+  "time_ms": to_unix_timestamp(ts, unit: "milliseconds"),
+  "collector_id": rec.collector_id,
+  "transport": rec.transport,
+  "peer": object(rec.peer) ?? {}
+}
+u.raw = {
+  "sha256": sha2(raw, variant: "SHA-256"),
+  "len": length(raw),
+  "utf8": (parse_json(encode_json(raw)) ?? null) == raw
+}
+if b64_err != null || u.raw.sha256 != rec.raw_sha256 || u.raw.len != rec.raw_len {
+  u.integrity_error = "archived record failed base64/sha256/length re-verification during replay"
+}
+u.replay = {"run": "@@REPLAY_RUN@@"}
+. = {"_raw": raw, "timestamp": ts, "ulpf": u}

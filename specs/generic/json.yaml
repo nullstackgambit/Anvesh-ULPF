@@ -1,0 +1,34 @@
+# Generic JSON object catch-all -> OCSF Base Event (status=fallback).
+id: ulpf.generic.json
+version: 1.0.0
+status: approved
+generic: true
+vendor: Generic
+product: JSON
+references:
+  - https://www.rfc-editor.org/rfc/rfc8259
+samples: synthetic
+priority: 15
+ocsf:
+  class: base_event
+  profiles: []
+match:
+  all:
+    - {layer: json}
+parse:
+  kind: json
+time:
+  - {field: "@timestamp", format: rfc3339}
+  - {field: timestamp, format: rfc3339}
+  - {field: time, format: rfc3339}
+  - {field: ts, format: epoch_auto}
+fields:
+  message: {to: message, type: string}
+tests:
+  - name: app_json
+    raw: '{"timestamp":"2026-10-07T10:15:30.250Z","level":"warn","message":"disk almost full","host":"app-01","disk":{"pct":91}}'
+    expect:
+      ulpf.status: fallback
+      message: disk almost full
+      time: 1791368130250
+      unmapped.disk.pct: 91

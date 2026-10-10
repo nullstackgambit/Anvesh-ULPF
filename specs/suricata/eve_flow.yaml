@@ -1,0 +1,73 @@
+# Suricata EVE JSON flow events -> OCSF Network Activity
+id: oisf.suricata.flow
+version: 1.0.0
+status: approved
+vendor: OISF
+product: Suricata
+description: Suricata EVE event_type=flow.
+references:
+  - https://docs.suricata.io/en/latest/output/eve/eve-json-format.html
+samples: synthetic
+priority: 200
+ocsf:
+  class: network_activity
+  profiles: [host, security_control]
+match:
+  all:
+    - {field: json.event_type, equals: flow}
+    - {field: json.flow_id, exists: true}
+parse:
+  kind: json
+time:
+  # EVE timestamps carry an offset without a colon (e.g. +0100)
+  - {field: timestamp, format: "%Y-%m-%dT%H:%M:%S%.f%z"}
+fields:
+  src_ip:    {to: src_endpoint.ip, type: ip}
+  src_port:  {to: src_endpoint.port, type: port}
+  dest_ip:   {to: dst_endpoint.ip, type: ip}
+  dest_port: {to: dst_endpoint.port, type: port}
+  proto:     {to: connection_info.protocol_name, type: string, transform: lower}
+  flow_id:   {to: connection_info.uid, type: string}
+  app_proto: {to: app_name, type: string}
+  in_iface:  {to: device.interface_name, type: string}
+  flow.bytes_toserver: {to: traffic.bytes_out, type: long}   # "total bytes count to server"
+  flow.bytes_toclient: {to: traffic.bytes_in, type: long}
+  flow.pkts_toserver:  {to: traffic.packets_out, type: long}
+  flow.pkts_toclient:  {to: traffic.packets_in, type: long}
+  flow.reason:         {to: status_detail, type: string}    # timeout / forced / shutdown
+  flow.alerted:        {to: is_alert, type: bool}
+  flow.start: {unmapped: true, note: "OCSF 1.9.0 start_time is aggregate-only"}
+  flow.end:   {unmapped: true, note: "OCSF 1.9.0 end_time is aggregate-only"}
+  flow.age:   {unmapped: true, note: "OCSF 1.9.0 duration is aggregate-only"}
+enums:
+  - source: flow.state
+    map: {new: {activity_id: 1}, established: {activity_id: 6}, closed: {activity_id: 2}, bypassed: {activity_id: 6}}
+    default: {activity_id: 99}
+  - source: flow.action
+    map: {pass: {action_id: 1, disposition_id: 1}, drop: {action_id: 2, disposition_id: 6}}
+    default: {action_id: 99, disposition_id: 99}
+set:
+  device.type_id: 13      # IDS
+derive:
+  - {to: connection_info.protocol_num, using: iana_protocol_num, from: connection_info.protocol_name}
+  - {to: connection_info.community_uid, using: community_id}
+tests:
+  - name: tcp_closed_pass
+    raw: "{\"timestamp\":\"2026-10-07T10:15:30.250000+0000\",\"flow_id\":1000000424242,\"in_iface\":\"eth0\",\"event_type\":\"flow\",\"src_ip\":\"10.1.1.20\",\"src_port\":51515,\"dest_ip\":\"203.0.113.20\",\"dest_port\":443,\"proto\":\"TCP\",\"app_proto\":\"tls\",\"flow\":{\"pkts_toserver\":10,\"pkts_toclient\":12,\"bytes_toserver\":1200,\"bytes_toclient\":9800,\"start\":\"2026-10-07T10:15:30.250000+0000\",\"end\":\"2026-10-07T10:15:30.250000+0000\",\"age\":12,\"state\":\"closed\",\"reason\":\"timeout\",\"alerted\":false,\"action\":\"pass\"}}"
+    expect:
+      ulpf.status: parsed
+      time: 1791368130250
+      activity_id: 2
+      action_id: 1
+      src_endpoint.ip: 10.1.1.20
+      dst_endpoint.port: 443
+      connection_info.protocol_num: 6
+      traffic.bytes_out: 1200
+      is_alert: false
+  - name: udp_drop
+    raw: "{\"timestamp\":\"2026-10-07T11:00:00.000000+0000\",\"flow_id\":1000000000077,\"in_iface\":\"eth0\",\"event_type\":\"flow\",\"src_ip\":\"10.2.3.4\",\"src_port\":40000,\"dest_ip\":\"198.51.100.53\",\"dest_port\":53,\"proto\":\"UDP\",\"app_proto\":\"dns\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":80,\"bytes_toclient\":0,\"start\":\"2026-10-07T11:00:00.000000+0000\",\"end\":\"2026-10-07T11:00:00.000000+0000\",\"age\":12,\"state\":\"closed\",\"reason\":\"timeout\",\"alerted\":false,\"action\":\"drop\"}}"
+    expect:
+      ulpf.status: parsed
+      action_id: 2
+      disposition_id: 6
+      disposition: Dropped

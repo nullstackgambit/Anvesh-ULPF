@@ -1,0 +1,673 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ulpf:schema:spec:1",
+  "title": "ULPF source specification",
+  "description": "Declarative description of how one log source is recognised, parsed and mapped to OCSF. Structural rules live here; semantic rules (OCSF paths, types, enums, duplicates) are enforced by `ulpf spec lint` (ulpf/spec.py).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "vendor",
+    "product",
+    "ocsf",
+    "match",
+    "parse",
+    "tests"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+){1,5}$",
+      "maxLength": 96
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "status": {
+      "enum": [
+        "approved",
+        "draft"
+      ],
+      "default": "approved"
+    },
+    "vendor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "product": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "description": {
+      "type": "string"
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^https?://"
+      }
+    },
+    "samples": {
+      "enum": [
+        "synthetic",
+        "real",
+        "mixed"
+      ],
+      "description": "Provenance of the test vectors (no-fabrication policy)."
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000,
+      "default": 100
+    },
+    "ocsf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class"
+      ],
+      "properties": {
+        "class": {
+          "type": "string",
+          "pattern": "^[a-z_/]+$"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "match": {
+      "$ref": "#/$defs/match"
+    },
+    "parse": {
+      "$ref": "#/$defs/parse"
+    },
+    "time": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/time"
+      }
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/field"
+      }
+    },
+    "enums": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/enum"
+      }
+    },
+    "set": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "integer",
+          "number",
+          "boolean"
+        ]
+      }
+    },
+    "derive": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/derive"
+      }
+    },
+    "unmapped": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "empty_values": {
+          "enum": [
+            "count",
+            "keep"
+          ],
+          "default": "count",
+          "description": "count: empty/null source values are not stored but are counted in ulpf.coverage.empty"
+        },
+        "empty_markers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Values that mean 'no value' in this format (e.g. '-' in Squid/Zeek TSV); treated like empty values."
+        }
+      }
+    },
+    "pii": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "action"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "action": {
+            "enum": [
+              "hmac_sha256"
+            ]
+          }
+        }
+      }
+    },
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/test"
+      }
+    },
+    "onboarding": {
+      "type": "object",
+      "description": "Written by `ulpf onboard`: suggestion evidence for drafts. Ignored by the compiler."
+    },
+    "approval": {
+      "type": "object",
+      "description": "Written by `ulpf promote`. Ignored by the compiler."
+    },
+    "generic": {
+      "type": "boolean",
+      "default": false,
+      "description": "Format-level catch-all (no vendor semantics). Events keep status=fallback so they stay in the onboarding queue, but get structured fields and a parsed time."
+    }
+  },
+  "$defs": {
+    "literal": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "layer": {
+          "enum": [
+            "syslog",
+            "pri",
+            "json",
+            "cef",
+            "leef",
+            "kv",
+            "csv",
+            "text"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "equals": {
+          "$ref": "#/$defs/literal"
+        },
+        "in": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/literal"
+          }
+        },
+        "prefix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contains": {
+          "type": "string",
+          "minLength": 1
+        },
+        "regex": {
+          "type": "string",
+          "minLength": 1
+        },
+        "exists": {
+          "type": "boolean"
+        }
+      },
+      "dependentRequired": {
+        "equals": [
+          "field"
+        ],
+        "in": [
+          "field"
+        ],
+        "prefix": [
+          "field"
+        ],
+        "contains": [
+          "field"
+        ],
+        "regex": [
+          "field"
+        ],
+        "exists": [
+          "field"
+        ]
+      }
+    },
+    "match": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "all": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "any": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "none": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        }
+      }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "columns"
+      ],
+      "properties": {
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "column"
+          ],
+          "properties": {
+            "column": {
+              "type": "string"
+            },
+            "equals": {
+              "type": "string"
+            },
+            "in": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "parse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "kv",
+            "json",
+            "csv",
+            "cef",
+            "leef",
+            "regex"
+          ]
+        },
+        "input": {
+          "enum": [
+            "body",
+            "after_pri",
+            "text"
+          ],
+          "default": "body"
+        },
+        "include_syslog": {
+          "type": "boolean",
+          "default": false,
+          "description": "Expose parse_syslog header fields as source fields syslog.hostname, syslog.appname, ..."
+        },
+        "kv": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "field_delimiter": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value_delimiter": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "csv": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "segments"
+          ],
+          "properties": {
+            "delimiter": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            "segments": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/segment"
+              }
+            }
+          }
+        },
+        "regex": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "pattern"
+          ],
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "json": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "flatten": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "extract": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Regex applied to the input first; the named group `payload` is what gets parsed, other named groups become source fields (e.g. a syslog hostname in front of a CSV body)."
+        }
+      }
+    },
+    "time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format"
+      ],
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1,
+          "description": "epoch_auto | epoch_s | epoch_ms | epoch_us | epoch_ns | rfc3339 | a strftime pattern"
+        },
+        "timezone": {
+          "type": "string",
+          "default": "UTC"
+        },
+        "offset_field": {
+          "type": "string",
+          "description": "Source field holding a UTC offset such as +0530; consumed by time."
+        },
+        "year": {
+          "enum": [
+            "infer"
+          ],
+          "description": "The format has no year: use the receipt year (adjusted at year boundaries)."
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "field"
+          ]
+        },
+        {
+          "required": [
+            "fields"
+          ]
+        }
+      ]
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "to": {
+          "type": "string",
+          "pattern": "^[a-z_]+(\\.[a-z_]+)*$"
+        },
+        "type": {
+          "enum": [
+            "string",
+            "ip",
+            "subnet",
+            "port",
+            "int",
+            "long",
+            "float",
+            "bool",
+            "mac",
+            "timestamp",
+            "json"
+          ]
+        },
+        "transform": {
+          "enum": [
+            "lower",
+            "upper",
+            "trim"
+          ]
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "format": {
+          "type": "string",
+          "description": "for type=timestamp: same values as time.format"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "unmapped": {
+          "const": true,
+          "description": "Deliberately kept in `unmapped` (state why in note)."
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "to",
+            "type"
+          ],
+          "not": {
+            "required": [
+              "unmapped"
+            ]
+          }
+        },
+        {
+          "required": [
+            "unmapped",
+            "note"
+          ],
+          "not": {
+            "required": [
+              "to"
+            ]
+          }
+        }
+      ]
+    },
+    "enum": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "map"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "case_insensitive": {
+          "type": "boolean",
+          "default": true
+        },
+        "map": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/enumvalues"
+          }
+        },
+        "default": {
+          "$ref": "#/$defs/enumvalues",
+          "description": "Used for values not in map. Use 99 (Other) to keep the source value in the caption sibling."
+        },
+        "missing": {
+          "$ref": "#/$defs/enumvalues",
+          "description": "Used when the source field is absent."
+        },
+        "match": {
+          "enum": [
+            "exact",
+            "contains"
+          ],
+          "default": "exact",
+          "description": "contains: a map key matches when it occurs in the (lower-cased) value, first match wins (for compositional codes such as Squid's TCP_DENIED_REPLY)."
+        },
+        "otherwise": {
+          "$ref": "#/$defs/enumvalues",
+          "description": "Values for non-matching source values that are EXPECTED (not flagged). Unlike `default`, the event is not marked partial."
+        }
+      }
+    },
+    "enumvalues": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "integer"
+      }
+    },
+    "derive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "to",
+        "using"
+      ],
+      "properties": {
+        "to": {
+          "type": "string"
+        },
+        "using": {
+          "enum": [
+            "iana_protocol_name",
+            "iana_protocol_num",
+            "community_id",
+            "tz_offset_minutes",
+            "copy"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "description": "OCSF path that must already be set (iana_*, copy)"
+        },
+        "source": {
+          "type": "string",
+          "description": "source field (tz_offset_minutes); consumed"
+        }
+      }
+    },
+    "test": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "raw": {
+          "type": "string"
+        },
+        "raw_file": {
+          "type": "string"
+        },
+        "expect": {
+          "type": "object",
+          "description": "Dotted path -> expected value (subset match)."
+        },
+        "golden": {
+          "type": "boolean",
+          "default": true,
+          "description": "Compare the full normalized event with tests/golden/<spec id>/<name>.expected.json"
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "raw"
+          ]
+        },
+        {
+          "required": [
+            "raw_file"
+          ]
+        }
+      ]
+    }
+  }
+}

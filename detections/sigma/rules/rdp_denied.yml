@@ -1,0 +1,16 @@
+title: Denied RDP connection attempt (any firewall vendor)
+id: 7c1c9118-9d58-43f7-a24f-7341a3bf71dd
+status: experimental
+description: A firewall denied a TCP connection to port 3389. Written once against OCSF; matches every vendor ULPF normalizes.
+author: ULPF
+date: 2026-10-07
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 3389
+    action_id: 2
+  condition: selection
+falsepositives:
+  - Scanners and misconfigured clients
+level: medium

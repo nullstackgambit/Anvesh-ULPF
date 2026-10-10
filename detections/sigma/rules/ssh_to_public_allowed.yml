@@ -1,0 +1,21 @@
+title: Allowed SSH to a non-private address
+id: 4dd7c7bc-1f9c-46eb-8f88-9da70e7fed1f
+status: experimental
+description: Outbound SSH (tcp/22) to an address outside RFC 1918 space was allowed.
+author: ULPF
+date: 2026-10-07
+logsource:
+  category: firewall
+detection:
+  selection:
+    dst_port: 22
+    action_id: 1
+  private:
+    dst_ip|cidr:
+      - 10.0.0.0/8
+      - 172.16.0.0/12
+      - 192.168.0.0/16
+  condition: selection and not private
+falsepositives:
+  - Administrators managing external servers
+level: low

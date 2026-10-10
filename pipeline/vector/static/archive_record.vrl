@@ -1,0 +1,26 @@
+# ULPF raw archive record (static). One JSON line per received event.
+# raw_b64 holds the exact received bytes; raw_sha256/raw_len were computed in
+# the envelope from the same bytes.
+#
+# The record is serialised here (encode_json: sorted keys, byte-identical to
+# Vector's json codec) into `message`, so that a reduce transform can batch
+# many lines into one file write: Vector 0.58's file sink issues one write
+# per event and managed ~210 events/s on the reference VM (P6 finding).
+#
+# `timestamp` is only used by the file sink's path template. It is the
+# *archive write time*, not the receipt time: if backpressure delays an event,
+# it lands in the current minute file instead of re-opening a file that
+# `ulpf seal` may already have sealed. The receipt time is in ingest_time.
+raw = string!(._raw)
+rec = {
+  "v": 1,
+  "event_uid": .ulpf.event_uid,
+  "ingest_time": .ulpf.ingest.time,
+  "collector_id": .ulpf.ingest.collector_id,
+  "transport": .ulpf.ingest.transport,
+  "peer": .ulpf.ingest.peer,
+  "raw_len": .ulpf.raw.len,
+  "raw_sha256": .ulpf.raw.sha256,
+  "raw_b64": encode_base64(raw)
+}
+. = {"message": encode_json(rec), "timestamp": now()}
